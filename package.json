@@ -5,7 +5,9 @@
   "main": "app.js",
   "dependencies": {
     "faker": "^5.4.0",
+    "log4js": "^6.3.0",
     "mongodb": "^3.6.5",
+    "progress": "^2.0.3",
     "request": "^2.88.2",
     "request-promise": "^4.2.6"
   },
