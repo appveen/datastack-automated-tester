@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-home',
@@ -7,10 +8,19 @@ import { Component, OnInit } from '@angular/core';
 })
 export class HomeComponent implements OnInit {
 
-  constructor() { }
+  menuItem = 'env';
+
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router
+  ) { }
 
   ngOnInit(): void {
-  	console.log("here")
+  }
+
+  menuClick(menu: string) {
+    this.menuItem = menu;
+    this.router.navigate([menu], {relativeTo: this.route});
   }
 
 }

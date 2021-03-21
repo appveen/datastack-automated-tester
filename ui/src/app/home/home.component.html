@@ -1,2 +1,27 @@
+<nav class="navbar navbar-light bg-light">
+	<div class="container-fluid">
+		<span class="navbar-brand mb-0 h1">data.stack Automated Tester</span>
+		<button class="btn btn-warning btn-sm">Log out <i class="bi bi-box-arrow-right"></i></button>
+	</div>
+</nav>
 
-<h1>HOME</h1>
+<div class="container-fluid p-3">
+	<div class="row">
+		<div class="col-2">
+			<div class="list-group">
+				<button type="button" class="list-group-item list-group-item-action" [ngClass]="{'active': menuItem == 'env'}" (click)="menuClick('env')">
+					<i class="bi bi-hdd-rack"></i> Environments
+				</button>
+				<button type="button" class="list-group-item list-group-item-action" [ngClass]="{'active': menuItem == 'tests'}" (click)="menuClick('tests')">
+					<i class="bi bi-speedometer2"></i> Tests
+				</button>
+				<button type="button" class="list-group-item list-group-item-action" [ngClass]="{'active': menuItem == 'dataset'}" (click)="menuClick('dataset')">
+					<i class="bi bi-server"></i> Data sets
+				</button>
+			</div>
+		</div>
+		<div class="col-10">
+			<router-outlet></router-outlet>
+		</div>
+	</div>
+</div>
