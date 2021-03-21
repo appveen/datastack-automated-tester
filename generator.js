@@ -35,7 +35,7 @@ async function __generatePayload(_testDataStructure, _data, _updateData) {
 }
 
 async function __handleStringType(_testDataStructure, _definition) {
-  logger.debug(`[${_testDataStructure.testId}] [${_definition.key}] Generating string-ascii data`)
+  logger.debug(`[${_testDataStructure.testSet}] [${_definition.key}] Generating string-ascii data`)
   let counter = 0
 
   await stringASCII.reduce(async (_prev, _char) => {
@@ -49,9 +49,9 @@ async function __handleStringType(_testDataStructure, _definition) {
     updateData[_definition.key] = `${_char}${_char}${_char}`
     return await __generatePayload(_testDataStructure, data, updateData)
   }, Promise.resolve())
-  logger.debug(`[${_testDataStructure.testId}] [${_definition.key}] Finished generating string-ascii data`)
+  logger.debug(`[${_testDataStructure.testSet}] [${_definition.key}] Finished generating string-ascii data`)
 
-  logger.debug(`[${_testDataStructure.testId}] [${_definition.key}] Generating string data`)
+  logger.debug(`[${_testDataStructure.testSet}] [${_definition.key}] Generating string data`)
   await stringData.reduce(async (_prev, _string) => {
     await _prev
     counter++
@@ -63,14 +63,14 @@ async function __handleStringType(_testDataStructure, _definition) {
     updateData[_definition.key] = `${_string}${_string}${_string}`
     return await __generatePayload(_testDataStructure, data, updateData)
   }, Promise.resolve())
-  logger.debug(`[${_testDataStructure.testId}] [${_definition.key}] Finished generating string data`)
+  logger.debug(`[${_testDataStructure.testSet}] [${_definition.key}] Finished generating string data`)
 }
 
 e.generateSampleData = async (_dataServices) => {
-  let testId = faker.random.words(3).toLowerCase().split(" ").join("-")
-  logger.info(`TestID :: ${testId}`)
+  let testSet = faker.random.words(3).toLowerCase().split(" ").join("-")
+  logger.info(`TestID :: ${testSet}`)
   let testDataStructure = {
-    testId: testId,
+    testSet: testSet,
     app: _dataServices.app,
     name: _dataServices.name,
     method: "POST",

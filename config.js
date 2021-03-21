@@ -1,8 +1,18 @@
+const mongodb = require("mongodb")
+
 module.exports = {
 	"datastack": {
 		"URL": process.env.URL || "https://localhost",
 		"USERNAME": process.env.USERNAME || "admin",
 		"PASSWORD": process.env.PASSWORD || "password"
+	},
+	"db": {
+		"MONGOURL": process.env.MONGOURL ? process.env.MONGOURL : 'mongodb://localhost:27017',
+		"DB_NAME": process.env.DB_NAME ? process.env.DB_NAME : "dataStackTests",
+		"clinetOptions": {
+			"readPreference": mongodb.ReadPreference.SECONDARY_PREFERRED,
+			"useUnifiedTopology": true
+		}
 	},
 	"logging": {
 		"loglevel": process.env.LOG_LEVEL || "info",

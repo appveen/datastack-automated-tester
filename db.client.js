@@ -1,15 +1,11 @@
 const mongodb = require("mongodb")
-const MONGOURL = process.env.MONGOURL ? process.env.MONGOURL : 'mongodb://localhost:27017'
-const DB_NAME = process.env.DB_NAME ? process.env.DB_NAME : "dataStackTests"
+const config = require("./config")
 
-const client = new mongodb.MongoClient(MONGOURL, {
-	readPreference: mongodb.ReadPreference.SECONDARY_PREFERRED,
-	useUnifiedTopology: true
-})
+const client = new mongodb.MongoClient(config.db.MONGOURL, config.db.clinetOptions)
 
 let logger = global.logger
 
-logger.info(`MONGOURL : ${MONGOURL}`)
+logger.info(`MONGOURL : ${config.db.MONGOURL}`)
 
 let db = null
 
