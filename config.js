@@ -30,5 +30,12 @@ module.exports = {
 				}
 			}
 		}
+	},
+	"apis": {
+		'login': `/api/a/rbac/login`,
+		'logout': `/api/a/rbac/logout`,
+		'check': `/api/a/rbac/check`,
+		'app': `/api/a/rbac/app`,
+		'sm': `/api/a/sm/service`
 	}
 }

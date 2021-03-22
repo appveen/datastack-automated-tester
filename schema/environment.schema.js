@@ -5,7 +5,8 @@ let definition = {
 	"name": {
 		"type": "String",
 		"unique": true,
-		"required": true
+		"required": true,
+		"sparse": true
 	},
 	"url": "String",
 	"username": "String",

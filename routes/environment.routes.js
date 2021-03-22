@@ -12,4 +12,6 @@ router.get("/:id", envCrud.show)
 router.put("/:id", envCrud.update)
 router.delete("/:id", envCrud.destroy)
 
+router.post("/fetchApps", (_req, _res) => { })
+
 module.exports = router
