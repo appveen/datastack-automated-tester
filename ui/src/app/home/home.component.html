@@ -1,6 +1,6 @@
-<nav class="navbar navbar-light bg-light">
+<nav class="navbar navbar-light bg-white shadow mb-2">
 	<div class="container-fluid">
-		<span class="navbar-brand mb-0 h1">data.stack Automated Tester</span>
+		<span class="navbar-brand mb-1 h1 text-dark">data.stack Automated Tester</span>
 		<button class="btn btn-warning btn-sm">Log out <i class="bi bi-box-arrow-right"></i></button>
 	</div>
 </nav>
@@ -10,13 +10,13 @@
 		<div class="col-2">
 			<div class="list-group">
 				<button type="button" class="list-group-item list-group-item-action" [ngClass]="{'active': menuItem == 'env'}" (click)="menuClick('env')">
-					<i class="bi bi-hdd-rack"></i> Environments
+					<i class="bi bi-hdd-rack fs-5"></i> Environments
 				</button>
 				<button type="button" class="list-group-item list-group-item-action" [ngClass]="{'active': menuItem == 'tests'}" (click)="menuClick('tests')">
-					<i class="bi bi-speedometer2"></i> Tests
+					<i class="bi bi-speedometer2 fs-5"></i> Tests
 				</button>
 				<button type="button" class="list-group-item list-group-item-action" [ngClass]="{'active': menuItem == 'dataset'}" (click)="menuClick('dataset')">
-					<i class="bi bi-server"></i> Data sets
+					<i class="bi bi-server fs-5"></i> Data sets
 				</button>
 			</div>
 		</div>

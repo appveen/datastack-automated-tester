@@ -11,10 +11,10 @@ let definition = {
 	"url": "String",
 	"username": "String",
 	"password": "String",
+	"app": "String",
 	"dataServices": [{
-		"app": "String",
-		"dataServiceId": "String",
-		"dataServiceName": "String",
+		"_id": "String",
+		"name": "String",
 	}]
 }
 

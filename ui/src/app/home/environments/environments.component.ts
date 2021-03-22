@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-environments',
@@ -7,9 +8,20 @@ import { Component, OnInit } from '@angular/core';
 })
 export class EnvironmentsComponent implements OnInit {
 
-  addView = false;
+  addView = true;
+  formEnvironment: FormGroup;
 
-  constructor() { }
+  constructor(
+    private fb: FormBuilder,
+  ) {
+    this.formEnvironment = this.fb.group({
+      name: ['', Validators.required],
+      url: ['', Validators.required],
+      username: ['', Validators.required],
+      password: ['', Validators.required],
+      app: ['', Validators.required]
+    });
+  }
 
   ngOnInit(): void {
   }
@@ -25,7 +37,8 @@ export class EnvironmentsComponent implements OnInit {
   }
 
   addEnvironment(): void {
-    console.log('addEnvironment');
+    const payload = this.formEnvironment.value;
+    console.log(payload);
     this.addView = false;
   }
 
