@@ -1,10 +1,10 @@
 <div class="container-fluid">
 	<div class="row">
 		<div class="col-12 mb-3">
-			<h2 class="mb-3 text-secondary"><i class="bi bi-hdd-rack"></i> Environments</h2>
+			<h2 class="mb-3 text-dark"><i class="bi bi-hdd-rack"></i> Environments</h2>
 			<hr>
 		</div>
-		<div class="col-3">
+		<div class="col-2">
 			<div class="d-grid gap-2">
 				<button class="btn btn-outline-primary" (click)="showAddEnvironment()">
 					<i class="bi bi-cloud-plus"></i> Add environment
@@ -17,7 +17,7 @@
 				<button type="button" class="list-group-item list-group-item-action">3-9</button>
 			</div>
 		</div>
-		<div class="col-9">
+		<div class="col-10">
 			<!-- SHOW ENV -->
 			<div *ngIf="!addView" class="card w-75 shadow">
 				<div class="card-body">
@@ -31,61 +31,76 @@
 			</div>
 			<!-- ADD NEW ENV -->
 			<div *ngIf="addView">
-				<nav class="navbar navbar-expand-lg navbar-light bg-light">
+				<nav class="navbar navbar-expand-lg bg-secondary border bg-light">
 					<div class="container-fluid">
 						<h4>Add new environment</h4>
 						<div class="d-flex">
-							<button class="btn btn-sm btn-outline-danger mx-2" (click)="cancelAddEnvironment()"> <i class="bi bi-x fs-5"></i> Cancel&nbsp;&nbsp; </button>
-							<button class="btn btn-sm btn-success" (click)="addEnvironment()"> <i class="bi bi-plus fs-5"></i> Add&nbsp;&nbsp;&nbsp;&nbsp;</button>
+							<button class="btn btn-sm btn-outline-danger mx-2 buttonwidth" (click)="cancelAddEnvironment()"> Cancel </button>
+							<button class="btn btn-sm btn-success buttonwidth" (click)="addEnvironment()"> Add </button>
 						</div>
 					</div>
 				</nav>
 				<div class="card-body">
 					<form [formGroup]="formEnvironment">
-						<div class="mb-3">
+						
+						<div class="mb-3 col-4">
 							<label for="environmentName" class="form-label">Name of environment</label>
 							<input type="text" class="form-control" id="environmentName" formControlName="name">
 						</div>
 						
-						<div class="d-flex">
-							<div class="card w-50">
-								<div class="card-header">
-									Connection details
-								</div>
+						<div class="d-flex flex-row">
+							<!-- CONNECTION DETAILS -->
+							<div class="card col-5">
+								<h5 class="card-header">Connection details</h5>
 								<div class="card-body">
 									<div class="mb-3">
 										<label for="environmentURL" class="form-label">URL</label>
 										<input type="text" class="form-control" id="environmentURL" formControlName="url">
 									</div>
-									<div class="mb-3">
-										<label for="adminUsername" class="form-label">Username</label>
-										<input type="text" class="form-control" id="adminUsername" formControlName="username">
+									<div class="row g-3">
+										<div class="col-6">
+											<label for="adminUsername" class="form-label">Username</label>
+											<input type="text" class="form-control" id="adminUsername" formControlName="username">
+										</div>
+										<div class="col-6">
+											<label for="adminPassword" class="form-label">Password</label>
+											<input type="password" class="form-control" id="adminPassword" formControlName="password">
+										</div>
 									</div>
-									<div class="mb-3">
-										<label for="adminPassword" class="form-label">Password</label>
-										<input type="password" class="form-control" id="adminPassword" formControlName="password">
-									</div>
-								</div>
-								<div class="card-footer">
-									<div class="d-grid gap-2 col-6 mx-auto">
-										<button class="btn btn-secondary btn-sm" (click)="addEnvironment()">
-											<i class="bi bi-box-arrow-down-left"></i> Fetch Apps
-										</button>
-										<button class="btn btn-outline-secondary btn-sm" (click)="addEnvironment()">
-											<i class="bi bi-arrow-repeat"></i>
-										</button>
-									</div>
+									<p class="mb-1 text-danger" *ngIf="errors.app">{{errors.app}}</p>
+									
+									<button class="btn btn-warning btn-sm float-end mt-2" (click)="fetchApps()">
+										<i class="bi bi-box-arrow-down-left" *ngIf="!spinner.fetchApp"></i>
+										<span class="spinner-grow spinner-grow-sm text-light" role="status" aria-hidden="true" *ngIf="spinner.fetchApp"></span>
+										Fetch Apps
+									</button>
 								</div>
 							</div>
-							<div class="p-2 flex-shrink-1 bd-highlight">
-								<button type="button" class="btn btn-outline-primary btn-sm m-1">App 1</button>
-								<button type="button" class="btn btn-outline-primary btn-sm m-1">App 1</button>
-								<button type="button" class="btn btn-outline-primary btn-sm m-1">App 1</button>
-								<button type="button" class="btn btn-outline-primary btn-sm m-1">App 1</button>
-								<button type="button" class="btn btn-outline-primary btn-sm m-1">App 1</button>
-								<button type="button" class="btn btn-outline-primary btn-sm m-1">App 1</button>
+
+							<!-- APP LIST -->
+							<div class="card col-3 mx-1" *ngIf="appList.length > 0">
+								<h5 class="card-header">Select App</h5>
+								<div class="card-body">
+									<ng-container *ngFor="let app of appList">
+										<button type="button" class="btn btn-sm m-1" [ngClass]="{'btn-outline-primary':selectedApp != app, 'btn-primary':selectedApp == app}" (click)="appSelect(app)">
+											<span class="spinner-grow spinner-grow-sm text-light" role="status" aria-hidden="true" *ngIf="spinner.fetchDataService && selectedApp == app"></span>
+											{{app}}
+										</button>
+									</ng-container>
+								</div>
+							</div>
+
+							<!-- DATA SERVICE LIST -->
+							<div class="card col-3 mx-1" *ngIf="selectedApp">
+								<h5 class="card-header">Select DataServices</h5>
+								<div class="card-body">
+									<ng-container *ngFor="let ds of dataserviceList">
+										<button type="button" class="btn btn-sm m-1" [ngClass]="{'btn-outline-dark':selectedDataservice.indexOf(ds) == -1, 'btn-dark':selectedDataservice.indexOf(ds) != -1}" (click)="dataServiceSelect(ds)"> {{ds.name}} </button>
+									</ng-container>
+								</div>
 							</div>
 						</div>
+
 					</form>
 				</div>
 			</div>

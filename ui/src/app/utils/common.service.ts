@@ -72,6 +72,10 @@ export class CommonService {
     if (options.select) { urlParams = urlParams.set('select', options.select); }
     if (options.sort) { urlParams = urlParams.set('sort', options.sort); }
     if (options.filter) { urlParams = urlParams.set('filter', JSON.stringify(options.filter)); }
+    if (options.url) { urlParams = urlParams.set('url', options.url); }
+    if (options.username) { urlParams = urlParams.set('username', options.username); }
+    if (options.password) { urlParams = urlParams.set('password', options.password); }
+    if (options.app) { urlParams = urlParams.set('app', options.app); }
 
     const URL = environment.url[type] + url;
     return this.http
@@ -131,4 +135,7 @@ export interface GetOptions {
   app?: string;
   noApp?: boolean;
   serviceIds?: string;
+  url?: string;
+  username?: string;
+  password?: string;
 }

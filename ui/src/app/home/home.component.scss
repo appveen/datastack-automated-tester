@@ -1,0 +1,12 @@
+@import "src/assets/scss/bootstrap/_functions.scss";
+@import "src/assets/scss/bootstrap/_variables.scss";
+
+.menuItem {
+	cursor: pointer;
+	color: $dark;
+}
+
+.menuSelected{
+	background-color: $yellow-500;
+	color: $dark;
+};
