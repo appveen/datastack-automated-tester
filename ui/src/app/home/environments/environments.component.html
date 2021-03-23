@@ -44,14 +44,14 @@
 					<form [formGroup]="formEnvironment">
 						
 						<div class="mb-3 col-4">
-							<label for="environmentName" class="form-label">Name of environment</label>
+							<label for="environmentName" class="form-label">Name of environment <small class="text-danger">*</small></label>
 							<input type="text" class="form-control" id="environmentName" formControlName="name">
 						</div>
 						
 						<div class="d-flex flex-row">
 							<!-- CONNECTION DETAILS -->
 							<div class="card col-5">
-								<h5 class="card-header">Connection details</h5>
+								<h5 class="card-header">Connection details <small class="badge bg-dark float-end">Step 1/3</small></h5>
 								<div class="card-body">
 									<div class="mb-3">
 										<label for="environmentURL" class="form-label">URL</label>
@@ -67,7 +67,7 @@
 											<input type="password" class="form-control" id="adminPassword" formControlName="password">
 										</div>
 									</div>
-									<p class="mb-1 text-danger" *ngIf="errors.app">{{errors.app}}</p>
+									<small class="mb-1 text-danger" *ngIf="errors.app">{{errors.app}}</small>
 									
 									<button class="btn btn-warning btn-sm float-end mt-2" (click)="fetchApps()">
 										<i class="bi bi-box-arrow-down-left" *ngIf="!spinner.fetchApp"></i>
@@ -79,7 +79,7 @@
 
 							<!-- APP LIST -->
 							<div class="card col-3 mx-1" *ngIf="appList.length > 0">
-								<h5 class="card-header">Select App</h5>
+								<h5 class="card-header">Select App <small class="badge bg-dark float-end">Step 2/3</small></h5>
 								<div class="card-body">
 									<ng-container *ngFor="let app of appList">
 										<button type="button" class="btn btn-sm m-1" [ngClass]="{'btn-outline-primary':selectedApp != app, 'btn-primary':selectedApp == app}" (click)="appSelect(app)">
@@ -91,8 +91,8 @@
 							</div>
 
 							<!-- DATA SERVICE LIST -->
-							<div class="card col-3 mx-1" *ngIf="selectedApp">
-								<h5 class="card-header">Select DataServices</h5>
+							<div class="card col-4 mx-1" *ngIf="selectedApp">
+								<h5 class="card-header">Select DataServices <small class="badge bg-dark float-end">Step 3/3</small></h5>
 								<div class="card-body">
 									<ng-container *ngFor="let ds of dataserviceList">
 										<button type="button" class="btn btn-sm m-1" [ngClass]="{'btn-outline-dark':selectedDataservice.indexOf(ds) == -1, 'btn-dark':selectedDataservice.indexOf(ds) != -1}" (click)="dataServiceSelect(ds)"> {{ds.name}} </button>
