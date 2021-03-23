@@ -15,7 +15,7 @@ export class EnvironmentsComponent implements OnInit {
   appList = [];
   dataserviceList = [];
   selectedApp: string;
-  selectedDataservice = [];
+  selectedDataservices = [];
   errors = {
     app: null,
     dataservice: null,
@@ -34,7 +34,11 @@ export class EnvironmentsComponent implements OnInit {
       url: ['https://bifrost.odp.appveen.com', Validators.required],
       username: ['jerry@appveen.com', Validators.required],
       password: ['123123123', Validators.required],
-      app: ['', Validators.required]
+      app: ['', Validators.required],
+      dataServices: [this.fb.group({
+        _id: ['', Validators.required],
+        name: ['', Validators.required],
+      }), [Validators.minLength(1), Validators.required]]
     });
   }
 
@@ -82,7 +86,7 @@ export class EnvironmentsComponent implements OnInit {
           return this.errors.app = 'No apps found';
         }
         this.appList = response;
-        this.selectedDataservice = [];
+        this.selectedDataservices = [];
         this.resetSpinners();
       },
       () => {
@@ -98,7 +102,8 @@ export class EnvironmentsComponent implements OnInit {
     this.formEnvironment.patchValue({app: selectedApp});
     this.selectedApp = selectedApp;
     const payload = this.formEnvironment.value;
-    this.selectedDataservice = [];
+    this.selectedDataservices = [];
+    this.dataserviceList = [];
     this.commonService.get('environment', '/fetch/dataservices', payload)
     .subscribe(
       response => {
@@ -109,15 +114,24 @@ export class EnvironmentsComponent implements OnInit {
         this.resetSpinners();
       },
       () => {
-        this.errors.app = 'Error fetching apps';
+        this.errors.dataservice = 'Error fetching dataservices';
         this.resetSpinners();
       }
     );
   }
 
   dataServiceSelect(selectedDataservice: object): void {
-    this.selectedDataservice.push(selectedDataservice);
-    console.log(this.selectedDataservice);
+    const dsIndex = this.selectedDataservices.indexOf(selectedDataservice);
+    if (dsIndex === -1 ) {
+      this.selectedDataservices.push(selectedDataservice);
+    } else {
+      this.selectedDataservices.splice(dsIndex, 1);
+    }
+  }
+
+  activateSaveButton(): boolean {
+    this.formEnvironment.patchValue({ dataServices: JSON.parse(JSON.stringify(this.selectedDataservices)) });
+    return this.formEnvironment.valid;
   }
 
 

@@ -36,7 +36,7 @@
 						<h4>Add new environment</h4>
 						<div class="d-flex">
 							<button class="btn btn-sm btn-outline-danger mx-2 buttonwidth" (click)="cancelAddEnvironment()"> Cancel </button>
-							<button class="btn btn-sm btn-success buttonwidth" (click)="addEnvironment()"> Add </button>
+							<button class="btn btn-sm btn-success buttonwidth" (click)="addEnvironment()" [disabled]="!activateSaveButton()"> Add </button>
 						</div>
 					</div>
 				</nav>
@@ -79,7 +79,7 @@
 
 							<!-- APP LIST -->
 							<div class="card col-3 mx-1" *ngIf="appList.length > 0">
-								<h5 class="card-header">Select App <small class="badge bg-dark float-end">Step 2/3</small></h5>
+								<h5 class="card-header">App <small class="badge bg-dark float-end">Step 2/3</small></h5>
 								<div class="card-body">
 									<ng-container *ngFor="let app of appList">
 										<button type="button" class="btn btn-sm m-1" [ngClass]="{'btn-outline-primary':selectedApp != app, 'btn-primary':selectedApp == app}" (click)="appSelect(app)">
@@ -87,16 +87,23 @@
 											{{app}}
 										</button>
 									</ng-container>
+									<small class="mb-1 text-danger" *ngIf="errors.dataservice">{{errors.dataservice}}</small>
+								</div>
+								<div class="card-footer" *ngIf="selectedApp">
+									<small><span class="text-muted">Selected app :</span>&nbsp;<span class="text-danger">{{selectedApp}}</span></small>
 								</div>
 							</div>
 
 							<!-- DATA SERVICE LIST -->
-							<div class="card col-4 mx-1" *ngIf="selectedApp">
-								<h5 class="card-header">Select DataServices <small class="badge bg-dark float-end">Step 3/3</small></h5>
+							<div class="card col-4 mx-1" *ngIf="dataserviceList.length > 0">
+								<h5 class="card-header">DataServices <small class="badge bg-dark float-end">Step 3/3</small></h5>
 								<div class="card-body">
 									<ng-container *ngFor="let ds of dataserviceList">
-										<button type="button" class="btn btn-sm m-1" [ngClass]="{'btn-outline-dark':selectedDataservice.indexOf(ds) == -1, 'btn-dark':selectedDataservice.indexOf(ds) != -1}" (click)="dataServiceSelect(ds)"> {{ds.name}} </button>
+										<button type="button" class="btn btn-sm m-1" [ngClass]="{'btn-outline-dark':selectedDataservices.indexOf(ds) == -1, 'btn-dark':selectedDataservices.indexOf(ds) != -1}" (click)="dataServiceSelect(ds)"> {{ds.name}} </button>
 									</ng-container>
+								</div>
+								<div class="card-footer" *ngIf="selectedApp">
+									<small><span class="text-danger">{{selectedDataservices.length}}</span>&nbsp;<span class="text-muted">selected.</span> </small>
 								</div>
 							</div>
 						</div>
