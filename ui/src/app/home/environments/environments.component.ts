@@ -10,20 +10,31 @@ import { CommonService } from '../../utils/common.service';
 })
 export class EnvironmentsComponent implements OnInit {
 
-  addView = true;
+  addView = false;
   formEnvironment: FormGroup;
+  environments = [];
+  selectedEnvironment = null;
   appList = [];
   dataserviceList = [];
   selectedApp: string;
   selectedDataservices = [];
+  editMode = false;
+  deleteConfirmation = false;
   errors = {
+    get: null,
+    remove: null,
+    add: null,
     app: null,
     dataservice: null,
   };
   spinner = {
+    get: false,
+    remove: false,
+    add: false,
     fetchApp: false,
     fetchDataService: false,
   };
+  addSuccess = true;
 
   constructor(
     private fb: FormBuilder,
@@ -43,42 +54,126 @@ export class EnvironmentsComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.getEnvironments();
   }
 
-  resetError(): void {
+  _resetError(): void {
     this.errors = {
+      get: null,
+      remove: null,
+      add: null,
       app: null,
       dataservice: null,
     };
   }
 
-  resetSpinners(): void {
+  _resetSpinners(): void {
     this.spinner = {
+      get: false,
+      remove: false,
+      add: false,
       fetchApp: false,
       fetchDataService: false
     };
   }
 
-  showAddEnvironment(): void {
-    console.log('showAddEnvironment');
+  showAddEnvironment(edit: boolean): void {
+    this._resetError();
+    this._resetSpinners();
     this.addView = true;
+    this.formEnvironment.reset();
+    this.selectedApp = null;
+    this.selectedDataservices = null;
+    this.appList = [];
+    this.dataserviceList = [];
+    this.editMode = false;
+    if (edit) {
+      this.formEnvironment.patchValue(this.selectedEnvironment);
+      this.fetchApps();
+      this.editMode = true;
+      this.selectedApp = this.selectedEnvironment.app;
+      this.appSelect(this.selectedApp);
+    }
   }
 
   cancelAddEnvironment(): void {
-    console.log('cancelAddEnvironment');
+    this._resetError();
+    this._resetSpinners();
+    this.addView = false;
+    this.formEnvironment.reset();
+    this.selectedApp = null;
+    this.selectedDataservices = null;
+  }
+
+  getEnvironments(): void {
+    this.commonService.get('environment', '/', {sort: 'name'})
+    .subscribe(
+      response => {
+        this._resetSpinners();
+        this.environments = response;
+        this.selectedEnvironment = this.environments[0];
+      },
+      () => {
+        this.errors.get = 'Error fetching environments';
+        this._resetSpinners();
+      }
+    );
+  }
+
+  setEnvironment(environment: object): void {
+    this.selectedEnvironment = environment;
+    this.selectedApp = null;
+    this.selectedDataservices = null;
+    this.appList = [];
+    this.dataserviceList = [];
+    this.editMode = false;
     this.addView = false;
   }
 
   addEnvironment(): void {
     const payload = this.formEnvironment.value;
-    console.log(payload);
-    this.addView = false;
+    this.spinner.add = true;
+    let request = null;
+    if (this.editMode) {
+      request = this.commonService.put('environment', `/${this.selectedEnvironment._id}`, payload);
+    } else {
+      request = this.commonService.post('environment', '/', payload);
+    }
+    request.subscribe(
+      () => {
+        this.spinner.add = false;
+        this.addSuccess = true;
+        this.addView = false;
+        this.getEnvironments();
+      },
+      () => {
+        this.errors.add = true;
+        this._resetSpinners();
+      }
+    );
+  }
+
+  deleteEnvironment(id: string): void {
+    this.spinner.remove = true;
+    this.commonService.delete('environment', `/${id}`)
+    .subscribe(
+      () => {
+        this.spinner.remove = false;
+        this.getEnvironments();
+        this.deleteConfirmation = false;
+      },
+      () => {
+        this.errors.remove = true;
+        this._resetSpinners();
+        this.deleteConfirmation = false;
+      }
+    );
   }
 
   fetchApps(): void {
     const payload = this.formEnvironment.value;
     this.spinner.fetchApp = true;
-    this.resetError();
+    this._resetError();
     this.commonService.get('environment', '/fetch/apps', payload)
     .subscribe(
       response => {
@@ -86,18 +181,21 @@ export class EnvironmentsComponent implements OnInit {
           return this.errors.app = 'No apps found';
         }
         this.appList = response;
-        this.selectedDataservices = [];
-        this.resetSpinners();
+        this.selectedDataservices = null;
+        if (this.editMode) {
+          this.selectedDataservices = this.selectedEnvironment.dataServices;
+        }
+        this._resetSpinners();
       },
       () => {
         this.errors.app = 'Error fetching apps';
-        this.resetSpinners();
+        this._resetSpinners();
       }
     );
   }
 
   appSelect(selectedApp: string): void {
-    this.resetError();
+    this._resetError();
     this.spinner.fetchDataService = true;
     this.formEnvironment.patchValue({app: selectedApp});
     this.selectedApp = selectedApp;
@@ -111,17 +209,25 @@ export class EnvironmentsComponent implements OnInit {
           return this.errors.dataservice = 'No dataservices found';
         }
         this.dataserviceList = response;
-        this.resetSpinners();
+        if (this.editMode && selectedApp === this.selectedEnvironment.app) {
+          this.selectedDataservices = this.selectedEnvironment.dataServices;
+        }
+        this._resetSpinners();
       },
       () => {
         this.errors.dataservice = 'Error fetching dataservices';
-        this.resetSpinners();
+        this._resetSpinners();
       }
     );
   }
 
-  dataServiceSelect(selectedDataservice: object): void {
-    const dsIndex = this.selectedDataservices.indexOf(selectedDataservice);
+  dataServiceSelect(selectedDataservice: any): void {
+    let dsIndex = -1;
+    this.selectedDataservices.forEach((ds, index) => {
+      if (ds._id === selectedDataservice._id ) {
+        dsIndex = index;
+      }
+    });
     if (dsIndex === -1 ) {
       this.selectedDataservices.push(selectedDataservice);
     } else {
@@ -129,11 +235,19 @@ export class EnvironmentsComponent implements OnInit {
     }
   }
 
+  dataServiceHasBeenSelected(id: string): boolean {
+    let flag = false;
+    this.selectedDataservices.forEach(ds => {
+      if (ds._id === id ) {
+        flag = true;
+      }
+    });
+    return flag;
+  }
+
   activateSaveButton(): boolean {
     this.formEnvironment.patchValue({ dataServices: JSON.parse(JSON.stringify(this.selectedDataservices)) });
     return this.formEnvironment.valid;
   }
-
-
 
 }

@@ -4,7 +4,7 @@ import { HttpHeaders, HttpClient, HttpParams, HttpRequest, HttpEvent, HttpEventT
 import { Observable } from 'rxjs';
 
 import { environment } from 'src/environments/environment';
-
+import { UserDetails, GetOptions } from 'src/app/utils/interfaces';
 @Injectable({
   providedIn: 'root'
 })
@@ -119,23 +119,4 @@ export class CommonService {
         );
     });
   }
-}
-
-export interface UserDetails {
-  _id?: string;
-  token?: string;
-}
-
-export interface GetOptions {
-  page?: number;
-  count?: number;
-  select?: string;
-  sort?: string;
-  filter?: any;
-  app?: string;
-  noApp?: boolean;
-  serviceIds?: string;
-  url?: string;
-  username?: string;
-  password?: string;
 }
