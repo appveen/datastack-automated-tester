@@ -5,21 +5,21 @@
 			<hr>
 		</div>
 		<div class="col-2">
-			<div class="d-grid gap-2">
-				<button class="btn btn-outline-primary" (click)="showAddEnvironment == true"> Add dataset </button>
-			</div>
-			<div class="list-group mt-3">
+			<div class="list-group">
 				<button type="button" class="list-group-item list-group-item-action" [ngClass]="{'active': selected == 'String'}" (click)="menuClick('String')">String</button>
 				<button type="button" class="list-group-item list-group-item-action" [ngClass]="{'active': selected == 'Number'}" (click)="menuClick('Number')">Number</button>
 				<button type="button" class="list-group-item list-group-item-action" [ngClass]="{'active': selected == 'Boolean'}" (click)="menuClick('Boolean')">Boolean</button>
 				<button type="button" class="list-group-item list-group-item-action" [ngClass]="{'active': selected == 'Date'}" (click)="menuClick('Date')">Date</button>
 				<button type="button" class="list-group-item list-group-item-action" [ngClass]="{'active': selected == 'Location'}" (click)="menuClick('Location')">Location</button>
 			</div>
-			<ul class="list-group mt-3">
-				<li class="list-group-item d-grid gap-2">
-					<button type="button" class="btn btn-outline-danger btn-sm" (click)="showReinitConfirmation = true">Re-init</button>
-				</li>
-				<li class="list-group-item d-grid gap-2 bg-warning text-center border border-dark" *ngIf="showReinitConfirmation">
+			<div class="d-grid gap-2 mt-3">
+				<button class="btn btn-outline-primary" (click)="showAddEnvironment == true"> Add dataset </button>
+			</div>
+			<div class="d-grid gap-2 mt-3">
+				<button type="button" class="btn btn-outline-danger btn-sm" (click)="showReinitConfirmation = true">Re-init</button>
+			</div>
+			<ul class="list-group mt-3" *ngIf="showReinitConfirmation">
+				<li class="list-group-item d-grid gap-2 bg-warning text-center border border-dark">
 					<strong>Are you sure?</strong>
 					<small class="fw-light">This will reset datasets to the default values.</small>
 					<div class="btn-group btn-group-sm" role="group">
@@ -33,78 +33,204 @@
 		<div class="col-10">
 			
 			<!-- STRING DATA -->
-			<div class="d-flex flex-row" *ngIf="selected == 'String'">
-				<div class="col-5">
-					<div class="card-body">
-						<ul class="list-group">
-							<li class="list-group-item bg-light">
-								<h5 class="fs-5 fw-bold">ASCII Data <small class="badge bg-dark float-end">{{stringASCII?.data?.length}}</small></h5>
-							</li>
-							<li class="list-group-item">
-								<ng-container *ngIf="saveRequired">
-									<small class="text-danger" *ngIf="errors.upsert">Error saving data!</small>
-									<button class="btn btn-success float-end btn-sm buttonwidth" (click)="saveDataSet(stringASCII)">
-										<span class="spinner-grow spinner-grow-sm text-light" role="status" aria-hidden="true" *ngIf="spinner.upsert"></span>
-										Save
-									</button>
-								</ng-container>
-								<div class="input-group input-group-sm" *ngIf="saveRequired == false">
-									<input type="text" class="form-control" placeholder="Add data">
-									<button class="btn btn-success" type="button">Add</button>
-								</div>
-							</li>
-							<li class="list-group-item text-center text-muted d-flex flex-row align-items-center" *ngIf="stringASCII?.data?.length > 0">
-								<button class="btn btn-warning btn-sm" type="button" (click)="clearAllASCIIData()">Clear all</button>
-								<small class="fw-light col"> <strong>OR</strong> click on a character to remove it from the list.</small>
-							</li>
-							<li class="list-group-item text-center">
-								<ng-container *ngFor="let ascii of stringASCII?.data">
-									<button class="btn btn-sm btn-outline-dark m-1" (click)="removeItemFromDataSet('stringASCII', ascii)">
-										<pre>{{ascii}}</pre>
-									</button>
-								</ng-container>
-								<small *ngIf="stringASCII?.data?.length < 1" class="text-danger fw-light">No data!</small>
-							</li>
-						</ul>
+			<div class="card" *ngIf="selected == 'String'">
+				<div class="card-header">
+					<h5 class="fs-5 fw-bold">String<small class="badge bg-dark float-end">{{stringData?.data?.length}}</small></h5>
+				</div>
+				<div class="card-body">
+					
+					<div class="d-flex flex-row justify-content-between mb-3">
+
+						<div>
+							<button class="btn btn-warning btn-sm" type="button" (click)="clearData('stringData')">Clear all</button>
+							<small class="fw-light mx-3"><strong>OR</strong> click on an entry to remove it from the list.</small>
+						</div>
+						
+						<div *ngIf="saveRequired == true" class="d-flex flex-row justify-content-end">
+							<button class="btn btn-outline-danger btn-sm buttonwidth" (click)="menuClick('String')"> <span class="spinner-grow spinner-grow-sm text-light" *ngIf="spinner.upsert"></span> Cancel </button>
+							<button class="btn btn-success btn-sm buttonwidth mx-3" (click)="saveDataSet(stringData)"> <span class="spinner-grow spinner-grow-sm text-light" *ngIf="spinner.upsert"></span> Save </button>
+						</div>
+
+						<ng-container *ngIf="errors.upsert"> <small class="text-danger">Error saving data!</small> </ng-container>
+
+						<div *ngIf="saveRequired == false">
+							<div class="input-group input-group-sm">
+								<input type="text" class="form-control" placeholder="Add data" [(ngModel)]="inputData">
+								<button class="btn btn-success" type="button" (click)="addData('stringData')">Add</button>
+							</div>
+						</div>
+
+					</div>
+
+					<ng-container *ngFor="let data of stringData?.data">
+						<button class="btn btn-sm btn-outline-dark m-1 font-monospace" (click)="removeItemFromDataSet('stringData', data)">
+							<span *ngIf="data != ' ' && data != ''" class="text-break">{{data}}</span>
+							<small *ngIf="data == ''" class="text-muted fw-light">(Empty string '')</small>
+							<small *ngIf="data == ' '" class="text-muted fw-light">(Single space ' ')</small>
+						</button>
+					</ng-container>
+
+					<div *ngIf="stringData?.data?.length < 1">
+						<small class="text-danger fw-light">No data!</small>
+					</div>
+
+				</div>
+			</div>
+
+			<!-- NUMBER DATA -->
+			<div class="card" *ngIf="selected == 'Number'">
+				<div class="card-header">
+					<h5 class="fs-5 fw-bold">Number<small class="badge bg-dark float-end">{{numberData?.data?.length}}</small></h5>
+				</div>
+				<div class="card-body">
+					
+					<div class="d-flex flex-row justify-content-between mb-3">
+
+						<div>
+							<button class="btn btn-warning btn-sm" type="button" (click)="clearData('numberData')">Clear all</button>
+							<small class="fw-light mx-3"><strong>OR</strong> click on an entry to remove it from the list.</small>
+						</div>
+						
+						<div *ngIf="saveRequired == true" class="d-flex flex-row justify-content-end">
+							<button class="btn btn-outline-danger btn-sm buttonwidth" (click)="menuClick('String')"> <span class="spinner-grow spinner-grow-sm text-light" *ngIf="spinner.upsert"></span> Cancel </button>
+							<button class="btn btn-success btn-sm buttonwidth mx-3" (click)="saveDataSet(numberData)"> <span class="spinner-grow spinner-grow-sm text-light" *ngIf="spinner.upsert"></span> Save </button>
+						</div>
+
+						<ng-container *ngIf="errors.upsert"> <small class="text-danger">Error saving data!</small> </ng-container>
+
+						<div *ngIf="saveRequired == false">
+							<div class="input-group input-group-sm">
+								<input type="number" class="form-control" placeholder="Add data" [(ngModel)]="inputData">
+								<button class="btn btn-success" type="button" (click)="addData('numberData')">Add</button>
+							</div>
+						</div>
+
+					</div>
+
+					<ng-container *ngFor="let data of numberData?.data">
+						<button class="btn btn-sm btn-outline-dark m-1 font-monospace" (click)="removeItemFromDataSet('numberData', data)">
+							<span class="text-break">{{data}}</span>
+						</button>
+					</ng-container>
+
+					<div *ngIf="numberData?.data?.length < 1">
+						<small class="text-danger fw-light">No data!</small>
+					</div>
+
+				</div>
+			</div>
+
+			<!-- BOOLEAN DATA -->
+			<div class="card" *ngIf="selected == 'Boolean'">
+				<div class="card-header">
+					<h5 class="fs-5 fw-bold">Number<small class="badge bg-dark float-end">{{booleanData?.data?.length}}</small></h5>
+				</div>
+				<div class="card-body">
+
+					<ng-container *ngFor="let data of booleanData?.data">
+						<button class="btn btn-sm btn-outline-dark m-1 font-monospace" (click)="removeItemFromDataSet('booleanData', data)">
+							<span class="text-break">{{data.toString()}}</span>
+						</button>
+					</ng-container>
+
+					<div *ngIf="booleanData?.data?.length < 1">
+						<small class="text-danger fw-light">No data!</small>
+					</div>
+
+				</div>
+			</div>
+
+			<!-- DATE DATA -->
+			<div *ngIf="selected == 'Date'">
+				<div class="card">
+					<div class="card-header">
+						<h5 class="fs-5 fw-bold">Date<small class="badge bg-dark float-end">{{dateData?.data?.length}}</small></h5>
 					</div>
 				</div>
-				<div class="col-5">
-					<div class="card-body">
-						<ul class="list-group">
-							<li class="list-group-item bg-light">
-								<h5 class="fs-5 fw-bold">String Data <small class="badge bg-dark float-end">{{stringData?.data?.length}}</small></h5>
-							</li>
-							<li class="list-group-item">
-								<ng-container *ngIf="saveRequired">
-									<small class="text-danger" *ngIf="errors.upsert">Error saving data!</small>
-									<button class="btn btn-success float-end btn-sm buttonwidth" (click)="saveDataSet(stringData)">
-										<span class="spinner-grow spinner-grow-sm text-light" role="status" aria-hidden="true" *ngIf="spinner.upsert"></span>
-										Save
+				<div class="container-fluid mt-3">
+					<div class="row">
+						<div class="col-7">
+							<div class="d-flex flex-row justify-content-between mb-3">
+								<div *ngIf="dateData?.data?.length > 1">
+									<button class="btn btn-warning btn-sm" type="button" (click)="clearData('dateData')">Clear all</button>
+									<small class="fw-light mx-3"><strong>OR</strong> click on an entry to remove it from the list.</small>
+								</div>
+								<div *ngIf="saveRequired == true">
+									<button class="btn btn-outline-danger btn-sm buttonwidth" (click)="menuClick('Date')"> <span class="spinner-grow spinner-grow-sm text-light" *ngIf="spinner.upsert"></span> Cancel </button>
+									<button class="btn btn-success btn-sm buttonwidth mx-3" (click)="saveDataSet(dateData)"> <span class="spinner-grow spinner-grow-sm text-light" *ngIf="spinner.upsert"></span> Save </button>
+								</div>
+							</div>
+							<ul class="list-group">
+								<ng-container *ngFor="let data of dateData?.data">
+									<button class="list-group-item list-group-item-action font-monospace text-break d-flex justify-content-between align-items-center" (click)="inputData = getFormattedStringValue(data)">
+										<small>{{getStringValue(data)}}</small>
+										<span class="deleteItem" (click)="removeItemFromDataSet('dateData', data)"><i class="bi bi-trash"></i></span>
 									</button>
 								</ng-container>
-								<div class="input-group input-group-sm" *ngIf="saveRequired == false">
-									<input type="text" class="form-control" placeholder="Add data">
-									<button class="btn btn-success" type="button">Add</button>
-								</div>
-							</li>
-							<li class="list-group-item text-center text-muted d-flex flex-row align-items-center" *ngIf="stringData?.data?.length > 0">
-								<button class="btn btn-warning btn-sm" type="button" (click)="clearAllStringData()">Clear all</button>
-								<small class="fw-light col"> <strong>OR</strong> click on a character to remove it from the list.</small>
-							</li>
-							<ng-container *ngFor="let data of stringData?.data">
-								<li class="list-group-item">
-									<pre>{{data}}</pre>
-									<!-- (click)="removeItemFromDataSet('stringData', data)" -->
-								</li>
-							</ng-container>
-							<li class="list-group-item" *ngIf="stringData?.data?.length < 1">
+							</ul>
+							<div *ngIf="dateData?.data?.length < 1">
 								<small class="text-danger fw-light">No data!</small>
-							</li>
-						</ul>
+							</div>
+						</div>
+						<div class="col-5">
+							<div>
+								<small class="text-danger" *ngIf="errors.upsert">{{errors.upsert}}</small>
+								<button class="btn btn-success btn-sm float-end" type="button" (click)="addData('dateData')">Add</button>
+							</div>
+							<div class="mt-5">
+								<label for="jsonData" class="form-label">Data</label>
+								<textarea class="form-control form-control-sm" id="jsonData" rows="10" [(ngModel)]="inputData"></textarea>
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>
 
+			<!-- LOCATION DATA -->
+			<div *ngIf="selected == 'Location'">
+				<div class="card">
+					<div class="card-header">
+						<h5 class="fs-5 fw-bold">Location<small class="badge bg-dark float-end">{{locationData?.data?.length}}</small></h5>
+					</div>
+				</div>
+				<div class="container-fluid mt-3">
+					<div class="row">
+						<div class="col-7">
+							<div class="d-flex flex-row justify-content-between mb-3">
+								<div *ngIf="locationData?.data?.length > 1">
+									<button class="btn btn-warning btn-sm" type="button" (click)="clearData('locationData')">Clear all</button>
+									<small class="fw-light mx-3"><strong>OR</strong> click on an entry to remove it from the list.</small>
+								</div>
+								<div *ngIf="saveRequired == true">
+									<button class="btn btn-outline-danger btn-sm buttonwidth" (click)="menuClick('Date')"> <span class="spinner-grow spinner-grow-sm text-light" *ngIf="spinner.upsert"></span> Cancel </button>
+									<button class="btn btn-success btn-sm buttonwidth mx-3" (click)="saveDataSet(locationData)"> <span class="spinner-grow spinner-grow-sm text-light" *ngIf="spinner.upsert"></span> Save </button>
+								</div>
+							</div>
+							<ul class="list-group">
+								<ng-container *ngFor="let data of locationData?.data">
+									<button class="list-group-item list-group-item-action font-monospace text-break d-flex justify-content-between align-items-center" (click)="inputData = getFormattedStringValue(data)">
+										<small>{{getStringValue(data)}}</small>
+										<span class="deleteItem" (click)="removeItemFromDataSet('locationData', data)"><i class="bi bi-trash"></i></span>
+									</button>
+								</ng-container>
+							</ul>
+							<div *ngIf="locationData?.data?.length < 1">
+								<small class="text-danger fw-light">No data!</small>
+							</div>
+						</div>
+						<div class="col-5">
+							<div>
+								<small class="text-danger" *ngIf="errors.upsert">{{errors.upsert}}</small>
+								<button class="btn btn-success btn-sm float-end" type="button" (click)="addData('locationData')">Add</button>
+							</div>
+							<div class="mt-5">
+								<label for="jsonData" class="form-label">Data</label>
+								<textarea class="form-control form-control-sm" id="jsonData" rows="10" [(ngModel)]="inputData"></textarea>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
 
 		</div>
 	</div>

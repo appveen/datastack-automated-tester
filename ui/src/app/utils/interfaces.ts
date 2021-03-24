@@ -41,7 +41,6 @@ export interface DatasetNumber {
   _id?: string;
   data?: [string];
 }
-
 export interface DatasetObject {
   _id?: string;
   data?: [any];

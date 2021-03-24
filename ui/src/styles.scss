@@ -1,4 +1,5 @@
-/* You can add global styles to this file, and also import other style files */
+@import "src/assets/scss/bootstrap/_functions.scss";
+@import "src/assets/scss/bootstrap/_variables.scss";
 
 .shadow {
   box-shadow: 0px 0px 4px rgba(#000, 0.16);
@@ -6,4 +7,12 @@
 
 .buttonwidth {
   width: 6rem;
+}
+
+.deleteItem{
+  cursor: pointer;
+  
+  :hover{
+    color: $red;
+  }
 }
