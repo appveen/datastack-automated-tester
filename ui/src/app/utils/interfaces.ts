@@ -31,3 +31,18 @@ export interface EnvironmentDataService {
   _id?: string;
   name?: string;
 }
+
+export interface DatasetString {
+  _id?: string;
+  data?: [string];
+}
+
+export interface DatasetNumber {
+  _id?: string;
+  data?: [string];
+}
+
+export interface DatasetObject {
+  _id?: string;
+  data?: [any];
+}

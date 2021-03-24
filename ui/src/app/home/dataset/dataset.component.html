@@ -4,15 +4,108 @@
 			<h2 class="mb-3 text-secondary"><i class="bi bi-server"></i> Data sets</h2>
 			<hr>
 		</div>
-		<div class="col-3">
-			<div class="list-group">
+		<div class="col-2">
+			<div class="d-grid gap-2">
+				<button class="btn btn-outline-primary" (click)="showAddEnvironment == true"> Add dataset </button>
+			</div>
+			<div class="list-group mt-3">
 				<button type="button" class="list-group-item list-group-item-action" [ngClass]="{'active': selected == 'String'}" (click)="menuClick('String')">String</button>
 				<button type="button" class="list-group-item list-group-item-action" [ngClass]="{'active': selected == 'Number'}" (click)="menuClick('Number')">Number</button>
 				<button type="button" class="list-group-item list-group-item-action" [ngClass]="{'active': selected == 'Boolean'}" (click)="menuClick('Boolean')">Boolean</button>
+				<button type="button" class="list-group-item list-group-item-action" [ngClass]="{'active': selected == 'Date'}" (click)="menuClick('Date')">Date</button>
 				<button type="button" class="list-group-item list-group-item-action" [ngClass]="{'active': selected == 'Location'}" (click)="menuClick('Location')">Location</button>
 			</div>
+			<ul class="list-group mt-3">
+				<li class="list-group-item d-grid gap-2">
+					<button type="button" class="btn btn-outline-danger btn-sm" (click)="showReinitConfirmation = true">Re-init</button>
+				</li>
+				<li class="list-group-item d-grid gap-2 bg-warning text-center border border-dark" *ngIf="showReinitConfirmation">
+					<strong>Are you sure?</strong>
+					<small class="fw-light">This will reset datasets to the default values.</small>
+					<div class="btn-group btn-group-sm" role="group">
+						<button type="button" class="btn btn-dark buttonwidth" (click)="showReinitConfirmation = false">Cancel</button>
+						<button type="button" class="btn btn-success buttonwidth" (click)="reinitData()"> <span class="spinner-grow spinner-grow-sm text-light" role="status" aria-hidden="true" *ngIf="spinner.init"></span> Yes</button>
+					</div>
+					<small *ngIf="errors.init" class="text-danger fw-bold">Error initialising dataset!</small>
+				</li>
+			</ul>
 		</div>
-		<div class="col-9">
+		<div class="col-10">
+			
+			<!-- STRING DATA -->
+			<div class="d-flex flex-row" *ngIf="selected == 'String'">
+				<div class="col-5">
+					<div class="card-body">
+						<ul class="list-group">
+							<li class="list-group-item bg-light">
+								<h5 class="fs-5 fw-bold">ASCII Data <small class="badge bg-dark float-end">{{stringASCII?.data?.length}}</small></h5>
+							</li>
+							<li class="list-group-item">
+								<ng-container *ngIf="saveRequired">
+									<small class="text-danger" *ngIf="errors.upsert">Error saving data!</small>
+									<button class="btn btn-success float-end btn-sm buttonwidth" (click)="saveDataSet(stringASCII)">
+										<span class="spinner-grow spinner-grow-sm text-light" role="status" aria-hidden="true" *ngIf="spinner.upsert"></span>
+										Save
+									</button>
+								</ng-container>
+								<div class="input-group input-group-sm" *ngIf="saveRequired == false">
+									<input type="text" class="form-control" placeholder="Add data">
+									<button class="btn btn-success" type="button">Add</button>
+								</div>
+							</li>
+							<li class="list-group-item text-center text-muted d-flex flex-row align-items-center" *ngIf="stringASCII?.data?.length > 0">
+								<button class="btn btn-warning btn-sm" type="button" (click)="clearAllASCIIData()">Clear all</button>
+								<small class="fw-light col"> <strong>OR</strong> click on a character to remove it from the list.</small>
+							</li>
+							<li class="list-group-item text-center">
+								<ng-container *ngFor="let ascii of stringASCII?.data">
+									<button class="btn btn-sm btn-outline-dark m-1" (click)="removeItemFromDataSet('stringASCII', ascii)">
+										<pre>{{ascii}}</pre>
+									</button>
+								</ng-container>
+								<small *ngIf="stringASCII?.data?.length < 1" class="text-danger fw-light">No data!</small>
+							</li>
+						</ul>
+					</div>
+				</div>
+				<div class="col-5">
+					<div class="card-body">
+						<ul class="list-group">
+							<li class="list-group-item bg-light">
+								<h5 class="fs-5 fw-bold">String Data <small class="badge bg-dark float-end">{{stringData?.data?.length}}</small></h5>
+							</li>
+							<li class="list-group-item">
+								<ng-container *ngIf="saveRequired">
+									<small class="text-danger" *ngIf="errors.upsert">Error saving data!</small>
+									<button class="btn btn-success float-end btn-sm buttonwidth" (click)="saveDataSet(stringData)">
+										<span class="spinner-grow spinner-grow-sm text-light" role="status" aria-hidden="true" *ngIf="spinner.upsert"></span>
+										Save
+									</button>
+								</ng-container>
+								<div class="input-group input-group-sm" *ngIf="saveRequired == false">
+									<input type="text" class="form-control" placeholder="Add data">
+									<button class="btn btn-success" type="button">Add</button>
+								</div>
+							</li>
+							<li class="list-group-item text-center text-muted d-flex flex-row align-items-center" *ngIf="stringData?.data?.length > 0">
+								<button class="btn btn-warning btn-sm" type="button" (click)="clearAllStringData()">Clear all</button>
+								<small class="fw-light col"> <strong>OR</strong> click on a character to remove it from the list.</small>
+							</li>
+							<ng-container *ngFor="let data of stringData?.data">
+								<li class="list-group-item">
+									<pre>{{data}}</pre>
+									<!-- (click)="removeItemFromDataSet('stringData', data)" -->
+								</li>
+							</ng-container>
+							<li class="list-group-item" *ngIf="stringData?.data?.length < 1">
+								<small class="text-danger fw-light">No data!</small>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+
+
 		</div>
 	</div>
 </div>

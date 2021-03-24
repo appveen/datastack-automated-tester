@@ -2,13 +2,12 @@
 const Mongoose = require("mongoose")
 
 let definition = {
-	"name": {
+	"_id": "String",
+	"data": "Object",
+	"dataService": {
 		"type": "String",
-		"unique": true,
-		"required": true,
-		"sparse": true
+		default: null
 	},
-	"dataServices": "Object"
 }
 
 module.exports = Mongoose.Schema(definition)
