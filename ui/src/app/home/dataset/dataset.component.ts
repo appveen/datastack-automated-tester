@@ -14,8 +14,12 @@ export class DatasetComponent implements OnInit {
   selected = 'String';
   showReinitConfirmation = false;
   showAddDataset = false;
+  showDeleteDataset = false;
   saveRequiredASCII = false;
   saveRequired = false;
+
+  customView = false;
+  customData = null;
 
   inputDataset = null;
   inputData = null;
@@ -25,7 +29,7 @@ export class DatasetComponent implements OnInit {
   dateData: DatasetObject;
   locationData: DatasetObject;
   booleanData: DatasetObject;
-  userData: DatasetObject;
+  userCreatedData: [DatasetObject];
 
   errors = {
     create: null,
@@ -69,6 +73,7 @@ export class DatasetComponent implements OnInit {
   }
 
   menuClick(selection: string): void {
+    this.customView = false;
     this.selected = selection;
     this.saveRequired = false;
     this.spinner.fetch = true;
@@ -80,8 +85,11 @@ export class DatasetComponent implements OnInit {
       case 'Boolean': this.__loadBooleanData(); break;
       case 'Date': this.__loadDateData(); break;
       case 'Location': this.__loadLocationData(); break;
-      default:
+      default: {
+        this.customView = true;
+        this.__loadOneUserDatasets(selection);
         break;
+      }
     }
   }
 
@@ -158,6 +166,7 @@ export class DatasetComponent implements OnInit {
   __loadUserDatasets(): void {
     const qs = {
       sort: '_id',
+      select: '_id',
       filter: {
         _id: {
           '$nin': [ 'stringData', 'numberData', 'dateData', 'locationData', 'booleanData' ]
@@ -167,7 +176,21 @@ export class DatasetComponent implements OnInit {
     this.commonService.get('dataset', '/', qs)
     .subscribe(
       response => {
-        this.userData = response;
+        this.userCreatedData = response;
+        this.spinner.fetch = false;
+      },
+      () => {
+        this.errors.fetch = true;
+        this.spinner.fetch = false;
+      }
+    );
+  }
+
+  __loadOneUserDatasets(id: string): void {
+    this.commonService.get('dataset', `/${id}`, null)
+    .subscribe(
+      response => {
+        this.customData = response;
         this.spinner.fetch = false;
       },
       () => {
@@ -208,8 +231,7 @@ export class DatasetComponent implements OnInit {
           case 'Boolean': this.__loadBooleanData(); break;
           case 'Date': this.__loadDateData(); break;
           case 'Location': this.__loadLocationData(); break;
-          default:
-            break;
+          default: this.__loadOneUserDatasets(dataset._id); break;
         }
         this.spinner.upsert = false;
         this.saveRequired = false;
@@ -229,6 +251,7 @@ export class DatasetComponent implements OnInit {
       case 'dateData': this.dateData.data = null; break;
       case 'locationData': this.locationData.data = null; break;
       case 'booleanData': this.booleanData.data = null; break;
+      default: this.customData.data = null; break;
     }
     this.saveRequired = true;
   }
@@ -265,11 +288,12 @@ export class DatasetComponent implements OnInit {
       case 'dateData': id = this.dateData._id; data = JSON.parse(JSON.stringify(this.dateData)); break;
       case 'locationData': id = this.locationData._id; data = JSON.parse(JSON.stringify(this.locationData)); break;
       case 'booleanData': id = this.booleanData._id; data = JSON.parse(JSON.stringify(this.booleanData)); break;
+      default: id = this.customData._id; data = JSON.parse(JSON.stringify(this.customData)); break;
     }
     if (!data.data) {
       data.data = [];
     }
-    if (['dateData', 'locationData'].indexOf(dataset) !== -1 ) {
+    if (['dateData', 'locationData', 'custom'].indexOf(dataset) !== -1 ) {
       try {
         data.data.push(JSON.parse(this.inputData));
       } catch (e) {
@@ -281,7 +305,7 @@ export class DatasetComponent implements OnInit {
     }
     this.commonService.put('dataset', `/${id}`, data)
     .subscribe(
-      response => {
+      () => {
         this.inputData = null;
         switch (dataset) {
           case 'stringData': this.__loadStringData(); break;
@@ -289,6 +313,7 @@ export class DatasetComponent implements OnInit {
           case 'dateData': this.__loadDateData(); break;
           case 'locationData': this.__loadLocationData(); break;
           case 'booleanData': this.__loadBooleanData(); break;
+          default: this.__loadOneUserDatasets(this.customData._id); break;
         }
       },
       () => {
@@ -312,6 +337,24 @@ export class DatasetComponent implements OnInit {
       error => {
         this.errors.create = error.message;
         this.spinner.create = false;
+      }
+    );
+  }
+
+  deleteDataset(id: string): void {
+    this.__resetError();
+    this.__resetSpinners();
+    this.spinner.upsert = true;
+    this.commonService.delete('dataset', `/${id}`)
+    .subscribe(
+      () => {
+        this.showDeleteDataset = false;
+        this.menuClick('String');
+        this.__loadUserDatasets();
+      },
+      error => {
+        this.errors.upsert = error.message;
+        this.spinner.upsert = false;
       }
     );
   }

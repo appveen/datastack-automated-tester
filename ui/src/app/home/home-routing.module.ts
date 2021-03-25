@@ -10,7 +10,7 @@ import { TestsComponent } from './tests/tests.component';
 const routes: Routes = [
   {
     path: '', component: HomeComponent, children: [
-      { path: '', pathMatch: 'full', redirectTo: 'dataset' },
+      { path: '', pathMatch: 'full', redirectTo: 'env' },
       { path: 'env', component: EnvironmentsComponent },
       { path: 'tests', component: TestsComponent },
       { path: 'dataset', component: DatasetComponent }
