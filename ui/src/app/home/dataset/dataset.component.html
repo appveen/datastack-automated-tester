@@ -12,19 +12,40 @@
 				<button type="button" class="list-group-item list-group-item-action" [ngClass]="{'active': selected == 'Date'}" (click)="menuClick('Date')">Date</button>
 				<button type="button" class="list-group-item list-group-item-action" [ngClass]="{'active': selected == 'Location'}" (click)="menuClick('Location')">Location</button>
 			</div>
+			
 			<div class="d-grid gap-2 mt-3">
-				<button class="btn btn-outline-primary" (click)="showAddEnvironment == true"> Add dataset </button>
+				<button class="btn btn-outline-dark btn-sm" (click)="showAddDataset = !showAddDataset; inputDataset = null"> Add custom dataset </button>
 			</div>
+			<ul class="list-group mt-1 shadow" *ngIf="showAddDataset">
+				<li class="list-group-item border border-dark pb-3">
+					<div class="mb-3">
+						<label for="addDataSet" class="form-label form-label-sm">Add new dataset</label>
+						<input type="text" class="form-control form-control-sm" id="addDataSet" placeholder="Name of the dataset" [(ngModel)]="inputDataset">
+					</div>
+					<div>
+						<button type="button" class="btn btn-sm btn-outline-secondary" (click)="showAddDataset = false">Cancel</button>
+						<button type="button" class="btn btn-sm btn-success float-end" (click)="createDataSet()"> <span class="spinner-grow spinner-grow-sm text-light" role="status" aria-hidden="true" *ngIf="spinner.init"></span> Create</button>
+					</div>
+					<small *ngIf="errors.create" class="text-danger mt-3">Error creating dataset!</small>
+				</li>
+			</ul>
+
+			<div class="list-group mt-3">
+				<ng-container *ngFor="let customDataset of userData">
+					<button type="button" class="list-group-item list-group-item-action" [ngClass]="{'active': selected == customDataset._id}" (click)="menuClick(customDataset._id)">{{customDataset._id}}</button>
+				</ng-container>
+			</div>
+
 			<div class="d-grid gap-2 mt-3">
-				<button type="button" class="btn btn-outline-danger btn-sm" (click)="showReinitConfirmation = true">Re-init</button>
+				<button type="button" class="btn btn-outline-danger btn-sm" (click)="showReinitConfirmation = !showReinitConfirmation">Re-init</button>
 			</div>
-			<ul class="list-group mt-3" *ngIf="showReinitConfirmation">
-				<li class="list-group-item d-grid gap-2 bg-warning text-center border border-dark">
-					<strong>Are you sure?</strong>
+			<ul class="list-group mt-3 shadow" *ngIf="showReinitConfirmation">
+				<li class="list-group-item bg-warning border border-dark">
+					<strong>Are you sure?</strong><br>
 					<small class="fw-light">This will reset datasets to the default values.</small>
-					<div class="btn-group btn-group-sm" role="group">
-						<button type="button" class="btn btn-dark buttonwidth" (click)="showReinitConfirmation = false">Cancel</button>
-						<button type="button" class="btn btn-success buttonwidth" (click)="reinitData()"> <span class="spinner-grow spinner-grow-sm text-light" role="status" aria-hidden="true" *ngIf="spinner.init"></span> Yes</button>
+					<div class="mt-2">
+						<button type="button" class="btn btn-dark btn-sm" (click)="showReinitConfirmation = false">Cancel</button>
+						<button type="button" class="btn btn-danger btn-sm float-end" (click)="reinitData()"> <span class="spinner-grow spinner-grow-sm text-light" role="status" aria-hidden="true" *ngIf="spinner.init"></span> Reset</button>
 					</div>
 					<small *ngIf="errors.init" class="text-danger fw-bold">Error initialising dataset!</small>
 				</li>
@@ -220,7 +241,7 @@
 						</div>
 						<div class="col-5">
 							<div>
-								<small class="text-danger" *ngIf="errors.upsert">{{errors.upsert}}</small>
+								<small class="text-danger" *ngIf="errors.upsert">Error adding location data</small>
 								<button class="btn btn-success btn-sm float-end" type="button" (click)="addData('locationData')">Add</button>
 							</div>
 							<div class="mt-5">

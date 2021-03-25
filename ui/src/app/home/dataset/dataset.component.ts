@@ -13,10 +13,11 @@ export class DatasetComponent implements OnInit {
 
   selected = 'String';
   showReinitConfirmation = false;
-  showAddEnvironment = false;
+  showAddDataset = false;
   saveRequiredASCII = false;
   saveRequired = false;
 
+  inputDataset = null;
   inputData = null;
 
   stringData: DatasetString;
@@ -24,13 +25,16 @@ export class DatasetComponent implements OnInit {
   dateData: DatasetObject;
   locationData: DatasetObject;
   booleanData: DatasetObject;
+  userData: DatasetObject;
 
   errors = {
+    create: null,
     fetch: null,
     upsert: null,
     init: null
   };
   spinner = {
+    create: false,
     fetch: false,
     upsert: false,
     init: false,
@@ -43,10 +47,12 @@ export class DatasetComponent implements OnInit {
 
   ngOnInit(): void {
     this.menuClick('String');
+    this.__loadUserDatasets();
   }
 
   __resetError(): void {
     this.errors = {
+      create: null,
       fetch: null,
       upsert: null,
       init: null
@@ -55,6 +61,7 @@ export class DatasetComponent implements OnInit {
 
   __resetSpinners(): void {
     this.spinner = {
+      create: false,
       fetch: false,
       upsert: false,
       init: false,
@@ -65,6 +72,7 @@ export class DatasetComponent implements OnInit {
     this.selected = selection;
     this.saveRequired = false;
     this.spinner.fetch = true;
+    this.inputDataset = null;
     this.inputData = null;
     switch (this.selected) {
       case 'String': this.__loadStringData(); break;
@@ -138,6 +146,28 @@ export class DatasetComponent implements OnInit {
     .subscribe(
       response => {
         this.locationData = response;
+        this.spinner.fetch = false;
+      },
+      () => {
+        this.errors.fetch = true;
+        this.spinner.fetch = false;
+      }
+    );
+  }
+
+  __loadUserDatasets(): void {
+    const qs = {
+      sort: '_id',
+      filter: {
+        _id: {
+          '$nin': [ 'stringData', 'numberData', 'dateData', 'locationData', 'booleanData' ]
+        }
+      }
+    };
+    this.commonService.get('dataset', '/', qs)
+    .subscribe(
+      response => {
+        this.userData = response;
         this.spinner.fetch = false;
       },
       () => {
@@ -236,7 +266,7 @@ export class DatasetComponent implements OnInit {
       case 'locationData': id = this.locationData._id; data = JSON.parse(JSON.stringify(this.locationData)); break;
       case 'booleanData': id = this.booleanData._id; data = JSON.parse(JSON.stringify(this.booleanData)); break;
     }
-    if(!data.data) {
+    if (!data.data) {
       data.data = [];
     }
     if (['dateData', 'locationData'].indexOf(dataset) !== -1 ) {
@@ -264,6 +294,24 @@ export class DatasetComponent implements OnInit {
       () => {
         this.errors.upsert = true;
         this.spinner.upsert = false;
+      }
+    );
+  }
+
+  createDataSet(): void {
+    this.__resetError();
+    this.__resetSpinners();
+    this.spinner.create = true;
+    this.commonService.post('dataset', '/', {_id: this.inputDataset})
+    .subscribe(
+      () => {
+        this.inputDataset = null;
+        this.showAddDataset = false;
+        this.__loadUserDatasets();
+      },
+      error => {
+        this.errors.create = error.message;
+        this.spinner.create = false;
       }
     );
   }
