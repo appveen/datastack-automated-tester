@@ -9,10 +9,13 @@
 		<a class="menuItem nav-link" aria-current="page" [ngClass]="{'menuSelected': menuItem == 'env'}" (click)="menuClick('env')"><i class="bi bi-hdd-rack fs-5"></i> Environments</a>
   </li>
 	<li class="nav-item">
-		<a class="menuItem nav-link" aria-current="page" [ngClass]="{'menuSelected': menuItem == 'tests'}" (click)="menuClick('tests')"><i class="bi bi-speedometer2 fs-5"></i> Tests</a>
+		<a class="menuItem nav-link" aria-current="page" [ngClass]="{'menuSelected': menuItem == 'tests'}" (click)="menuClick('tests')"><i class="bi bi-collection fs-5"></i> Test suites</a>
   </li>
 	<li class="nav-item">
-		<a class="menuItem nav-link" aria-current="page" [ngClass]="{'menuSelected': menuItem == 'dataset'}" (click)="menuClick('dataset')"><i class="bi bi-server fs-5"></i> Data sets</a>
+		<a class="menuItem nav-link" aria-current="page" [ngClass]="{'menuSelected': menuItem == 'results'}" (click)="menuClick('results')"><i class="bi bi-clipboard-check fs-5"></i> Results</a>
+  </li>
+	<li class="nav-item">
+		<a class="menuItem nav-link" aria-current="page" [ngClass]="{'menuSelected': menuItem == 'dataset'}" (click)="menuClick('dataset')"><i class="bi bi-stack fs-5"></i> Data sets</a>
 	</li>
 </ul>
 

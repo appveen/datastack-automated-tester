@@ -2,9 +2,9 @@ const MongooseExpressMiddleware = require("mongoose-express-middleware")
 const express = require('express');
 const router = express.Router();
 
-let schema = require("../schema/test.schema")
+let schema = require("../schema/testSuite.schema")
 
-const testsCrud = new MongooseExpressMiddleware("tests", schema, null)
+const testsCrud = new MongooseExpressMiddleware("testSuite", schema, null)
 
 router.post("", testsCrud.create)
 router.get("", testsCrud.index)

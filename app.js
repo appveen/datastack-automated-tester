@@ -17,9 +17,10 @@ const db = require('./lib/db.client');
 // let data = require('./data.json');
 
 let environmentRouter = require("./routes/environment.routes")
-let datasetRouter = require("./routes/datasets.routes")
+let datasetRouter = require("./routes/dataset.routes")
 let testRouter = require("./routes/test.routes")
-let resultsRouter = require("./routes/results.routes")
+let testSuiteRouter = require("./routes/testSuite.routes")
+let resultsRouter = require("./routes/result.routes")
 let userRouter = require("./routes/user.routes")
 
 let checkSession = require('./lib/api.client').check
@@ -47,8 +48,9 @@ app.use(async (_req, _res, _next) => {
 })
 app.use("/api/environment", environmentRouter);
 app.use("/api/dataset", datasetRouter);
-app.use("/api/tests", testRouter);
-app.use("/api/results", resultsRouter);
+app.use("/api/testsuite", testSuiteRouter);
+app.use("/api/test", testRouter);
+app.use("/api/result", resultsRouter);
 
 // Mongoose.set("debug", "true")
 

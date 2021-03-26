@@ -9,14 +9,12 @@ let definition = {
 		"required": true,
 		"sparse": true
 	},
-	"url": "String",
-	"username": "String",
-	"password": "String",
+	"testSuite": "String",
 	"app": "String",
-	"dataServices": [{
-		"_id": "String",
-		"name": "String",
-	}]
+	"dataserviceName": "String",
+	"api": "String",
+	"dataSet": "String",
+	"generatedOn": "Date",
 }
 
 module.exports = Mongoose.Schema(definition)

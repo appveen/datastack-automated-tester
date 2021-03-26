@@ -1,1 +1,87 @@
-<p>tests works!</p>
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-12 mb-3">
+			<h2 class="mb-3 text-secondary">
+				<i class="bi bi-collection fs-5"></i>
+				Test suites
+				<button class="btn btn-success float-end">Create new test suite</button>
+			</h2>
+			<hr>
+		</div>
+
+		<!-- CREATE -->
+		<div class="col-12 mb-3 d-flex justify-content-center">
+			<div class="card shadow col-4">
+				<div class="card-header bg-dark text-white"><h4>New test suite <span class="badge float-end">1/2</span></h4></div>
+				<div class="card-body">
+					<form [formGroup]="formTestSuite">
+						<div class="form-floating mb-3">
+							<input type="text" class="form-control" id="testSuiteName" formControlName="name">
+							<label for="testSuiteName">Test suite name</label>
+						</div>
+						<div class="form-floating mb-3">
+							<select class="form-select" aria-label="Default select example" formControlName="environment">
+								<option selected>Select environment</option>
+								<option value="1">One</option>
+								<option value="2">Two</option>
+								<option value="3">Three</option>
+							</select>
+							<label for="testSuiteEnvironment">Test environment</label>
+						</div>
+						<div class="form-floating mb-3">
+							<select class="form-select" aria-label="Default select example" formControlName="dataserviceName">
+								<option selected>Select dataservice</option>
+								<option value="1">One</option>
+								<option value="2">Two</option>
+								<option value="3">Three</option>
+							</select>
+							<label for="testSuiteDataService">Dataservice</label>
+						</div>
+						<div class="form-floating mb-3">
+							<input type="text" class="form-control" id="testSuiteAPI" disabled formControlName="api">
+							<label for="testSuiteAPI">API</label>
+						</div>
+						<div class="form-check form-switch mb-3">
+							<input class="form-check-input" type="checkbox" id="testSuiteType" checked formControlName="testEachAttribute">
+							<label class="form-check-label" for="testSuiteType">Test each attribute</label>
+						</div>
+					</form>
+				</div>
+				<div class="card-footer">
+						<button class="btn btn-dark">Cancel</button>
+				</div>
+			</div>
+
+			<div class="card shadow col-6 mx-4">
+				<div class="card-header bg-dark text-white"><h4>Define test data <span class="badge float-end">2/2</span></h4></div>
+				<div class="card-body">
+					<div class="row">
+						<div class="col-5">
+							<select class="form-select form-select-sm">
+								<option selected>Attribute</option>
+								<option value="1">One</option>
+								<option value="2">Two</option>
+								<option value="3">Three</option>
+							</select>
+						</div>
+						<div class="col-5">
+							<select class="form-select form-select-sm">
+								<option selected>Dataset</option>
+								<option value="1">One</option>
+								<option value="2">Two</option>
+								<option value="3">Three</option>
+							</select>
+						</div>
+						<div class="col-2">
+							<button class="btn btn-outline-secondary btn-sm">Add</button>
+						</div>
+					</div>
+				</div>
+				<div class="card-footer">
+					<button class="btn btn-success float-end">Create</button>
+				</div>
+			</div>
+		</div>
+
+	</div>
+</div>

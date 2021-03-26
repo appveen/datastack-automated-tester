@@ -2,6 +2,7 @@
 const Mongoose = require("mongoose")
 
 let definition = {
+	"_id": "String",
 	"testId": "String",
 	"testSet": "String",
 	"startDate": "Date",

@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+
+import { CommonService } from '../../utils/common.service';
 
 @Component({
   selector: 'app-tests',
@@ -7,7 +10,25 @@ import { Component, OnInit } from '@angular/core';
 })
 export class TestsComponent implements OnInit {
 
-  constructor() { }
+  formTestSuite: FormGroup;
+
+  constructor(
+    private fb: FormBuilder,
+    private commonService: CommonService,
+  ) {
+    this.formTestSuite = this.fb.group({
+      name: ['', Validators.required],
+      environment: ['', Validators.required],
+      app: ['', Validators.required],
+      dataserviceName: ['', Validators.required],
+      api: ['', Validators.required],
+      testEachAttribute: [true, Validators.required],
+      testParams: this.fb.group({
+        attribute: ['', Validators.required],
+        dataset: ['', Validators.required],
+      }),
+    });
+  }
 
   ngOnInit(): void {
   }

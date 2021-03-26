@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 import { CommonService } from '../../utils/common.service';
+
 @Component({
   selector: 'app-environments',
   templateUrl: './environments.component.html',
@@ -40,10 +41,10 @@ export class EnvironmentsComponent implements OnInit {
     private commonService: CommonService,
   ) {
     this.formEnvironment = this.fb.group({
-      name: ['Bifrost', Validators.required],
-      url: ['https://bifrost.odp.appveen.com', Validators.required],
-      username: ['jerry@appveen.com', Validators.required],
-      password: ['123123123', Validators.required],
+      name: ['', Validators.required],
+      url: ['', Validators.required],
+      username: ['', Validators.required],
+      password: ['', Validators.required],
       app: ['', Validators.required],
       dataServices: [this.fb.group({
         _id: ['', Validators.required],
