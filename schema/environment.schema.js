@@ -3,19 +3,12 @@ const Mongoose = require("mongoose")
 
 let definition = {
 	"_id": "String",
-	"name": {
-		"type": "String",
-		"unique": true,
-		"required": true,
-		"sparse": true
-	},
 	"url": "String",
 	"username": "String",
 	"password": "String",
 	"app": "String",
-	"dataServices": [{
-		"_id": "String",
-		"name": "String",
+	"dataservices": [{
+		"type": "Object"
 	}]
 }
 

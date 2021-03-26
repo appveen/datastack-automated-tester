@@ -2,86 +2,115 @@
 	<div class="row">
 		<div class="col-12 mb-3">
 			<h2 class="mb-3 text-secondary">
-				<i class="bi bi-collection fs-5"></i>
-				Test suites
-				<button class="btn btn-success float-end">Create new test suite</button>
+				<div *ngIf="!showCreateModal">
+					<i class="bi bi-collection fs-5"></i>
+					<span> Test suites</span>
+					<button class="btn btn-success float-end" (click)="startCreate()">Create new test
+						suite</button>
+				</div>
+				<div *ngIf="showCreateModal">
+					<i class="bi bi-collection fs-5"></i>
+					<span> Create test suite</span>
+					<button class="btn btn-success float-end buttonwidth" (click)="createNewTestSuite()"
+						[disabled]="formTestSuite.invalid || mapping.length == 0">Create</button>
+					<button class="btn btn-outline-secondary mx-3 float-end buttonwidth"
+						(click)="showCreateModal = !showCreateModal">Cancel</button>
+				</div>
 			</h2>
 			<hr>
 		</div>
 
 		<!-- CREATE -->
-		<div class="col-12 mb-3 d-flex justify-content-center">
-			<div class="card shadow col-4">
-				<div class="card-header bg-dark text-white"><h4>New test suite <span class="badge float-end">1/2</span></h4></div>
-				<div class="card-body">
-					<form [formGroup]="formTestSuite">
-						<div class="form-floating mb-3">
-							<input type="text" class="form-control" id="testSuiteName" formControlName="name">
-							<label for="testSuiteName">Test suite name</label>
-						</div>
-						<div class="form-floating mb-3">
-							<select class="form-select" aria-label="Default select example" formControlName="environment">
-								<option selected>Select environment</option>
-								<option value="1">One</option>
-								<option value="2">Two</option>
-								<option value="3">Three</option>
-							</select>
-							<label for="testSuiteEnvironment">Test environment</label>
-						</div>
-						<div class="form-floating mb-3">
-							<select class="form-select" aria-label="Default select example" formControlName="dataserviceName">
-								<option selected>Select dataservice</option>
-								<option value="1">One</option>
-								<option value="2">Two</option>
-								<option value="3">Three</option>
-							</select>
-							<label for="testSuiteDataService">Dataservice</label>
-						</div>
-						<div class="form-floating mb-3">
-							<input type="text" class="form-control" id="testSuiteAPI" disabled formControlName="api">
-							<label for="testSuiteAPI">API</label>
-						</div>
-						<div class="form-check form-switch mb-3">
-							<input class="form-check-input" type="checkbox" id="testSuiteType" checked formControlName="testEachAttribute">
-							<label class="form-check-label" for="testSuiteType">Test each attribute</label>
-						</div>
-					</form>
-				</div>
-				<div class="card-footer">
-						<button class="btn btn-dark">Cancel</button>
-				</div>
-			</div>
-
-			<div class="card shadow col-6 mx-4">
-				<div class="card-header bg-dark text-white"><h4>Define test data <span class="badge float-end">2/2</span></h4></div>
-				<div class="card-body">
-					<div class="row">
-						<div class="col-5">
-							<select class="form-select form-select-sm">
-								<option selected>Attribute</option>
-								<option value="1">One</option>
-								<option value="2">Two</option>
-								<option value="3">Three</option>
-							</select>
-						</div>
-						<div class="col-5">
-							<select class="form-select form-select-sm">
-								<option selected>Dataset</option>
-								<option value="1">One</option>
-								<option value="2">Two</option>
-								<option value="3">Three</option>
-							</select>
-						</div>
-						<div class="col-2">
-							<button class="btn btn-outline-secondary btn-sm">Add</button>
-						</div>
+		<div class="col-12 ">
+			<div class="mb-3 d-flex justify-content-center gap-5">
+				<!-- LEFT -->
+				<div class="card col-4">
+					<div class="card-body">
+						<form [formGroup]="formTestSuite">
+							<div class="mb-3">
+								<label for="testSuiteName">Test suite name</label>
+								<input type="text" class="form-control" id="testSuiteName" formControlName="_id">
+							</div>
+							<div class="mb-3">
+								<label for="testSuiteEnvironment">Environment</label>
+								<select class="form-select" aria-label="Default select example" formControlName="environment"
+									(change)="updateDataServiceList($event)">
+									<option [value]="env._id" *ngFor="let env of environments">{{env._id}}</option>
+								</select>
+							</div>
+							<div class="mb-3">
+								<strong>APP: </strong>
+								<span class="badge bg-primary fw-normal text-light">{{formTestSuite.get('app').value || 'N/A'}}</span>
+							</div>
+							<div class="mb-3">
+								<label for="testSuiteDataService">Dataservice</label>
+								<select class="form-select" aria-label="Default select example" formControlName="dataserviceName"
+									(change)="updateAPI($event)">
+									<option [value]="dataservice._id" *ngFor="let dataservice of dataservices">{{dataservice.name}}
+									</option>
+								</select>
+							</div>
+							<div class="mb-3">
+								<strong>API: </strong>
+								<span class="badge bg-warning fw-normal text-dark">{{formTestSuite.get('api').value || 'N/A'}}</span>
+							</div>
+							<div class="form-check form-switch mb-3">
+								<input class="form-check-input" type="checkbox" id="testSuiteType" checked
+									formControlName="testEachAttribute">
+								<label class="form-check-label" for="testSuiteType">Test each attribute</label>
+							</div>
+						</form>
+					</div>
+					<div class="card-footer">
+						<span class="badge bg-dark float-end">1/2</span>
 					</div>
 				</div>
-				<div class="card-footer">
-					<button class="btn btn-success float-end">Create</button>
+				<!-- RIGHT -->
+				<div class="card col-6 height overflow-scroll">
+					<div class="card-body">
+						<div class="mb-2">
+							<span>Dataset mapping</span>
+							<button class="btn btn-warning btn-sm float-end" (click)="clearAllMappings()"
+								*ngIf="mapping.length > 5">Clear</button>
+						</div>
+						<table class="table table-hover table-sm">
+							<thead>
+								<tr>
+									<th scope="col">#</th>
+									<th scope="col">
+										<select class="form-select form-select-sm" [(ngModel)]="attribute">
+											<option [value]="attr[0]" *ngFor="let attr of attributes">{{attr[0]}} ({{attr[1]}})</option>
+										</select>
+									</th>
+									<th scope="col">
+										<select class="form-select form-select-sm" [(ngModel)]="dataset">
+											<option [value]="ds" *ngFor="let ds of datasets">{{ds}}</option>
+										</select>
+									</th>
+									<th scope="col">
+										<div class="d-grid">
+											<button class="btn btn-secondary btn-sm" (click)="addToDatasetMapping()"
+												[disabled]="!attribute || !dataset">Add</button>
+										</div>
+									</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr *ngFor="let row of formTestSuite.get('testParams').value; let i = index">
+									<td>{{i + 1}}</td>
+									<td>{{row[0]}}</td>
+									<td>{{row[1]}}</td>
+									<td><button class="btn btn-outline-danger btn-sm" (click)="clearItemFromMapping(i)">Clear</button>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					<div class="card-footer">
+						<span class="badge bg-dark float-end">2/2</span>
+					</div>
 				</div>
 			</div>
 		</div>
-
 	</div>
 </div>

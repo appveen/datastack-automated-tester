@@ -94,7 +94,7 @@ export class DatasetComponent implements OnInit {
   }
 
   __loadStringData(): void {
-    this.commonService.get('dataset', '/stringData', null)
+    this.commonService.get('dataset', '/String', null)
     .subscribe(
       response => {
         this.stringData = response;
@@ -108,7 +108,7 @@ export class DatasetComponent implements OnInit {
   }
 
   __loadNumberData(): void {
-    this.commonService.get('dataset', '/numberData', null)
+    this.commonService.get('dataset', '/Number', null)
     .subscribe(
       response => {
         this.numberData = response;
@@ -122,7 +122,7 @@ export class DatasetComponent implements OnInit {
   }
 
   __loadBooleanData(): void {
-    this.commonService.get('dataset', '/booleanData', null)
+    this.commonService.get('dataset', '/Boolean', null)
     .subscribe(
       response => {
         this.booleanData = response;
@@ -136,7 +136,7 @@ export class DatasetComponent implements OnInit {
   }
 
   __loadDateData(): void {
-    this.commonService.get('dataset', '/dateData', null)
+    this.commonService.get('dataset', '/Date', null)
     .subscribe(
       response => {
         this.dateData = response;
@@ -150,7 +150,7 @@ export class DatasetComponent implements OnInit {
   }
 
   __loadLocationData(): void {
-    this.commonService.get('dataset', '/locationData', null)
+    this.commonService.get('dataset', '/Location', null)
     .subscribe(
       response => {
         this.locationData = response;
@@ -169,7 +169,7 @@ export class DatasetComponent implements OnInit {
       select: '_id',
       filter: {
         _id: {
-          '$nin': [ 'stringData', 'numberData', 'dateData', 'locationData', 'booleanData' ]
+          '$nin': [ 'String', 'Number', 'Date', 'Location', 'Boolean' ]
         }
       }
     };

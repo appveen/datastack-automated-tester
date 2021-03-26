@@ -23,11 +23,11 @@ router.delete("/:id", datasetCrud.destroy)
 router.post("/init", async (_req, _res) => {
 	try {
 		await dbClient.deleteDocument("datasets", {})
-		await dbClient.insertDocument("datasets", { "_id": "stringData", data: stringData })
-		await dbClient.insertDocument("datasets", { "_id": "numberData", data: numberData })
-		await dbClient.insertDocument("datasets", { "_id": "dateData", data: dateData })
-		await dbClient.insertDocument("datasets", { "_id": "booleanData", data: booleanData })
-		await dbClient.insertDocument("datasets", { "_id": "locationData", data: locationData })
+		await dbClient.insertDocument("datasets", { "_id": "String", data: stringData })
+		await dbClient.insertDocument("datasets", { "_id": "Number", data: numberData })
+		await dbClient.insertDocument("datasets", { "_id": "Date", data: dateData })
+		await dbClient.insertDocument("datasets", { "_id": "Boolean", data: booleanData })
+		await dbClient.insertDocument("datasets", { "_id": "Location", data: locationData })
 		_res.end()
 	} catch (_err) {
 		apiClient.handleError(_err, _res)

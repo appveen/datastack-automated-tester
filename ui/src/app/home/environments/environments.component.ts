@@ -41,12 +41,12 @@ export class EnvironmentsComponent implements OnInit {
     private commonService: CommonService,
   ) {
     this.formEnvironment = this.fb.group({
-      name: ['', Validators.required],
+      _id: ['', Validators.required],
       url: ['', Validators.required],
       username: ['', Validators.required],
       password: ['', Validators.required],
       app: ['', Validators.required],
-      dataServices: [this.fb.group({
+      dataservices: [this.fb.group({
         _id: ['', Validators.required],
         name: ['', Validators.required],
       }), [Validators.minLength(1), Validators.required]]
@@ -106,7 +106,7 @@ export class EnvironmentsComponent implements OnInit {
   }
 
   getEnvironments(): void {
-    this.commonService.get('environment', '/', {sort: 'name'})
+    this.commonService.get('environment', '/', {sort: '_id'})
     .subscribe(
       response => {
         this._resetSpinners();
@@ -183,7 +183,7 @@ export class EnvironmentsComponent implements OnInit {
         this.appList = response;
         this.selectedDataservices = null;
         if (this.editMode) {
-          this.selectedDataservices = this.selectedEnvironment.dataServices;
+          this.selectedDataservices = this.selectedEnvironment.dataservices;
         }
         this._resetSpinners();
       },
@@ -210,7 +210,7 @@ export class EnvironmentsComponent implements OnInit {
         }
         this.dataserviceList = response;
         if (this.editMode && selectedApp === this.selectedEnvironment.app) {
-          this.selectedDataservices = this.selectedEnvironment.dataServices;
+          this.selectedDataservices = this.selectedEnvironment.dataservices;
         }
         this._resetSpinners();
       },
@@ -246,7 +246,7 @@ export class EnvironmentsComponent implements OnInit {
   }
 
   activateSaveButton(): boolean {
-    this.formEnvironment.patchValue({ dataServices: JSON.parse(JSON.stringify(this.selectedDataservices)) });
+    this.formEnvironment.patchValue({ dataservices: JSON.parse(JSON.stringify(this.selectedDataservices)) });
     return this.formEnvironment.valid;
   }
 

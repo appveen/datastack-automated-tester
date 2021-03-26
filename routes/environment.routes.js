@@ -47,7 +47,6 @@ router.get("/fetch/dataservices", async (_req, _res) => {
 		let loginResponse = await apiClient.login(data.url, data)
 		let qs = {
 			filter: { app: data.app },
-			select: "_id, name",
 			sort: "name"
 		}
 		logger.trace(JSON.stringify(qs))
