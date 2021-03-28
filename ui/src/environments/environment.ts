@@ -5,7 +5,8 @@ export const environment = {
     user: '/api/user',
     environment: '/api/environment',
     dataset: '/api/dataset',
-    tests: '/api/tests',
-    results: '/api/results',
+    test: '/api/test',
+    testsuite: '/api/testsuite',
+    result: '/api/result',
   }
 };

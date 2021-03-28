@@ -12,13 +12,15 @@ export class TestsComponent implements OnInit {
 
   formTestSuite: FormGroup;
 
-  showCreateModal = true;
+  showCreateModal = false;
 
   environments: any;
   selectedEnvironment: any;
   dataservices: any;
   selectedDataservice: any;
   datasets: any;
+  testsuite = [];
+  selectedTestsuite: any;
   attributes = [];
 
   attribute: any;
@@ -51,6 +53,7 @@ export class TestsComponent implements OnInit {
   ngOnInit(): void {
     this.__getEnvironments();
     this.__getDatasets();
+    this.__getTestsuites();
   }
 
   __resetErrors(): void {
@@ -85,6 +88,21 @@ export class TestsComponent implements OnInit {
     );
   }
 
+  __getTestsuites(): void {
+    this.__resetErrors();
+    this.__resetSpinners();
+    this.commonService.get('testsuite', '/', {sort: '_id'})
+    .subscribe(
+      data => {
+        this.testsuite = data.map(d => d._id);
+        if (data.length > 0) {
+          this.selectedTestsuite = data[0];
+        }
+      },
+      () => this.errors.misc = 'Error fetching testsuites'
+    );
+  }
+
   updateDataServiceList(event): void {
     const selectedEnvironment = event.target.value;
     this.formTestSuite.patchValue({api: null});
@@ -116,6 +134,14 @@ export class TestsComponent implements OnInit {
 
   createNewTestSuite(): void {
     console.log(this.formTestSuite.value);
+    this.commonService.post('testsuite', '/', this.formTestSuite.value)
+    .subscribe(
+      () => {
+        this.__getTestsuites();
+        this.showCreateModal = false;
+      },
+      () => this.errors.misc = 'Error creating testsuite'
+    );
   }
 
   addToDatasetMapping(): void {
@@ -137,6 +163,10 @@ export class TestsComponent implements OnInit {
     this.formTestSuite.patchValue({testParams: this.mapping});
     this.attribute = null;
     this.dataset = null;
+  }
+
+  menuClick(id: string): void {
+    console.log(this.selectedTestsuite);
   }
 
 }
