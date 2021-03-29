@@ -157,11 +157,9 @@
 							<div class="card col-4 mx-1" *ngIf="dataserviceList.length > 0">
 								<h5 class="card-header">DataServices <small class="badge bg-dark float-end">Step 3/3</small></h5>
 								<div class="card-body">
-									<ng-container *ngFor="let ds of dataserviceList">
-										<button type="button" class="btn btn-sm m-1"
-											[ngClass]="{'btn-outline-dark':!dataServiceHasBeenSelected(ds._id), 'btn-dark':dataServiceHasBeenSelected(ds._id)}"
-											(click)="dataServiceSelect(ds)"> {{ds.name}} </button>
-									</ng-container>
+									<button type="button" class="btn btn-sm m-1"
+										[ngClass]="{'btn-outline-dark':!dataServiceHasBeenSelected(ds._id), 'btn-dark':dataServiceHasBeenSelected(ds._id)}"
+										(click)="dataServiceSelect(ds)" *ngFor="let ds of dataserviceList"> {{ds.name}} </button>
 								</div>
 								<div class="card-footer" *ngIf="selectedApp">
 									<small><span class="text-danger">{{selectedDataservices.length}}</span>&nbsp;<span

@@ -21,22 +21,89 @@
 		</div>
 
 		<!-- LIST -->
-		<div class="col-12" *ngIf="!showCreateModal">
+		<div class="col-12 d-flex flex-row gap-2" *ngIf="!showCreateModal">
 			<div class="col-2">
-				<div class="list-group mt-3" *ngIf="testsuites?.length > 0">
+				<div class="list-group" *ngIf="testsuites?.length > 0">
 					<button type="button" class="list-group-item list-group-item-action"
 						[ngClass]="{'active': selectedTestsuite._id == ts._id}" (click)="menuClick(ts)"
 						*ngFor="let ts of testsuites">{{ts._id}}</button>
 				</div>
 			</div>
 			<div class="col-10">
-				<div class="col-4">
-					<div class="mb-2">
-						<p>Testsuite name</p>
-						<p>{{selectedTestsuite._id}}</p>
+				<nav class="navbar navbar-expand-lg bg-secondary border bg-light mb-3">
+					<div class="container-fluid">
+						<h4>{{selectedTestsuite?._id}}</h4>
+						<div class="d-flex">
+							<small class="text-danger mx-2" *ngIf="errors.remove">Error removing testEnvironment!</small>
+							<button class="btn btn-sm btn-outline-danger buttonwidth mx-2" (click)="deleteConfirmation = true">
+								Delete </button>
+							<!-- <button class="btn btn-sm btn-success buttonwidth" (click)="exitTestSuite()"> Edit
+							</button> -->
+						</div>
+					</div>
+				</nav>
+				<nav class="d-flex justify-content-end p-2 bg-warning shadow" *ngIf="deleteConfirmation">
+					<span class="text-dark fs-5">Are you sure?</span>
+					<button class="btn btn-sm btn-dark buttonwidth mx-2" (click)="deleteConfirmation = false">Cancel</button>
+					<button class="btn btn-sm btn-danger buttonwidth mx-2" (click)="deleteTestSuite()">
+						<span class="spinner-grow spinner-grow-sm text-dark" role="status" aria-hidden="true"
+							*ngIf="spinners.remove"></span> YES</button>
+				</nav>
+				<div class="d-flex flex-row gap-2">
+					<div class="card col-5">
+						<div class="card-body">
+							<div class="mb-2">
+								<strong>Environment:</strong>
+								<span class="mx-2">{{selectedTestsuite?.environment}}</span>
+							</div>
+							<div class="mb-2">
+								<strong>App:</strong>
+								<span class="badge bg-primary fw-normal text-light mx-2">{{selectedTestsuite?.app}}</span>
+							</div>
+							<div class="mb-2">
+								<strong>Dataservice:</strong>
+								<span class="mx-2">{{selectedTestsuite?.dataserviceName}}
+									<small>({{selectedTestsuite?.dataservice}})</small></span>
+							</div>
+							<div class="mb-2">
+								<strong>API:</strong>
+								<span class="badge bg-warning fw-normal text-dark mx-2">{{selectedTestsuite?.api}}</span>
+							</div>
+						</div>
+					</div>
+					<div class="card col-6">
+						<div class="card-body">
+							<div class="mb-2">
+								<strong>Test each attribute:</strong>
+								<span class="mx-2 badge bg-success" *ngIf="selectedTestsuite?.testEachAttribute">YES</span>
+								<span class="mx-2 badge bg-danger" *ngIf="!selectedTestsuite?.testEachAttribute">NO</span>
+							</div>
+
+							<strong class="mb-2">Datasets:</strong>
+
+							<table class="table table-hover table-sm" *ngIf="selectedTestsuite?.testEachAttribute">
+								<thead>
+									<tr>
+										<th scope="col">#</th>
+										<th scope="col">Attribute</th>
+										<th scope="col">Dataset</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr *ngFor="let row of selectedTestsuite?.testParams; let i = index">
+										<td>{{i + 1}}</td>
+										<td>{{row[0]}}</td>
+										<td>{{row[1]}}</td>
+									</tr>
+								</tbody>
+							</table>
+							<div *ngIf="!selectedTestsuite?.testEachAttribute">
+								<span class="badge bg-dark text-light mx-1"
+									*ngFor="let tp of selectedTestsuite?.testParams">{{tp}}</span>
+							</div>
+						</div>
 					</div>
 				</div>
-				<div class="col-8"></div>
 			</div>
 		</div>
 
@@ -64,7 +131,7 @@
 							</div>
 							<div class="mb-3">
 								<label for="testSuiteDataService">Dataservice</label>
-								<select class="form-select" aria-label="Default select example" formControlName="dataserviceName"
+								<select class="form-select" aria-label="Default select example" formControlName="dataservice"
 									(change)="updateAPI($event)">
 									<option [value]="dataservice._id" *ngFor="let dataservice of dataservices">{{dataservice.name}}
 									</option>
@@ -76,7 +143,7 @@
 							</div>
 							<div class="form-check form-switch mb-3">
 								<input class="form-check-input" type="checkbox" id="testSuiteType" checked
-									formControlName="testEachAttribute">
+									formControlName="testEachAttribute" (change)="datasetChanges()">
 								<label class="form-check-label" for="testSuiteType">Test each attribute</label>
 							</div>
 						</form>
@@ -93,7 +160,7 @@
 							<button class="btn btn-warning btn-sm float-end" (click)="clearAllMappings()"
 								*ngIf="mapping.length > 5">Clear</button>
 						</div>
-						<table class="table table-hover table-sm">
+						<table class="table table-hover table-sm" *ngIf="formTestSuite.get('testEachAttribute').value">
 							<thead>
 								<tr>
 									<th scope="col">#</th>
@@ -125,6 +192,12 @@
 								</tr>
 							</tbody>
 						</table>
+
+						<div class="p-2" *ngIf="!formTestSuite.get('testEachAttribute').value">
+							<button type="button" class="btn btn-sm m-1"
+								[ngClass]="{'btn-outline-dark':!datasetHasBeenSelected(ds), 'btn-dark':datasetHasBeenSelected(ds)}"
+								(click)="datasetSelect(ds)" *ngFor="let ds of datasets"> {{ds}} </button>
+						</div>
 					</div>
 					<div class="card-footer">
 						<span class="badge bg-dark float-end">2/2</span>

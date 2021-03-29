@@ -5,6 +5,7 @@ let definition = {
 	"_id": "String",
 	"environment": "String",
 	"app": "String",
+	"dataservice": "String",
 	"dataserviceName": "String",
 	"api": "String",
 	"testEachAttribute": {

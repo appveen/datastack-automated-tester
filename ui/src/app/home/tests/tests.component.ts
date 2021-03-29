@@ -13,6 +13,7 @@ export class TestsComponent implements OnInit {
   formTestSuite: FormGroup;
 
   showCreateModal = false;
+  deleteConfirmation = false;
 
   environments: any;
   selectedEnvironment: any;
@@ -28,11 +29,13 @@ export class TestsComponent implements OnInit {
   mapping = [];
 
   errors = {
-    misc: ''
+    misc: null,
+    remove: null
   };
 
   spinners = {
-    misc: false
+    misc: false,
+    remove: false
   };
 
   constructor(
@@ -43,28 +46,29 @@ export class TestsComponent implements OnInit {
       _id: ['', Validators.required],
       environment: ['', Validators.required],
       app: ['', Validators.required],
-      dataserviceName: ['', Validators.required],
+      dataservice: ['', Validators.required],
+      dataserviceName: [''],
       api: ['', Validators.required],
-      testEachAttribute: [true, Validators.required],
+      testEachAttribute: ['', Validators.required],
       testParams: [],
     });
   }
 
   ngOnInit(): void {
-    this.__getEnvironments();
-    this.__getDatasets();
     this.__getTestsuites();
   }
 
   __resetErrors(): void {
     this.errors = {
-      misc: ''
+      misc: null,
+      remove: null
     };
   }
 
   __resetSpinners(): void {
     this.spinners = {
-      misc: false
+      misc: false,
+      remove: false
     };
   }
 
@@ -120,6 +124,7 @@ export class TestsComponent implements OnInit {
     this.selectedEnvironment.dataservices.forEach(dataservice => {
       if (dataservice._id === selectedDataservice) {
         this.selectedDataservice = dataservice;
+        this.formTestSuite.patchValue({dataserviceName: this.selectedDataservice.name});
         this.attributes = this.commonService.generateAttributeSet('', dataservice.definition);
         const constuctedAPI = `${this.selectedEnvironment.url}/api/c/${this.selectedEnvironment.app}${this.selectedDataservice.api}`;
         this.formTestSuite.patchValue({api: constuctedAPI});
@@ -128,12 +133,14 @@ export class TestsComponent implements OnInit {
   }
 
   startCreate(): void {
+    this.__getEnvironments();
+    this.__getDatasets();
     this.formTestSuite.reset();
+    this.formTestSuite.patchValue({testEachAttribute: true});
     this.showCreateModal = true;
   }
 
   createNewTestSuite(): void {
-    console.log(this.formTestSuite.value);
     this.commonService.post('testsuite', '/', this.formTestSuite.value)
     .subscribe(
       () => {
@@ -144,11 +151,39 @@ export class TestsComponent implements OnInit {
     );
   }
 
+  exitTestSuite(): void {
+    this.showCreateModal = true;
+    this.formTestSuite.setValue(this.selectedTestsuite);
+    this.mapping = [];
+  }
+
+  deleteTestSuite(): void {
+    this.commonService.delete('testsuite', `/${this.selectedTestsuite._id}`)
+    .subscribe(
+      () => {
+        this.__getTestsuites();
+        this.showCreateModal = false;
+        this.deleteConfirmation = false;
+      },
+      () => this.errors.misc = 'Error creating testsuite'
+    );
+  }
+
   addToDatasetMapping(): void {
     this.mapping.push([this.attribute, this.dataset]);
     this.formTestSuite.patchValue({testParams: this.mapping});
     this.attribute = null;
     this.dataset = null;
+  }
+
+  datasetSelect(id: string): void {
+    const dsIndex = this.mapping.indexOf(id);
+    if (dsIndex === -1 ) {
+      this.mapping.push(id);
+    } else {
+      this.mapping.splice(dsIndex, 1);
+    }
+    this.formTestSuite.patchValue({testParams: this.mapping});
   }
 
   clearItemFromMapping(i: number): void {
@@ -167,6 +202,31 @@ export class TestsComponent implements OnInit {
 
   menuClick(ts: any): void {
     this.selectedTestsuite = ts;
+  }
+
+  datasetHasBeenSelected(id: any): boolean {
+    return this.mapping.indexOf(id) !== -1;
+  }
+
+  datasetChanges(): void {
+    const qs = {
+      sort: '_id',
+      select: '_id',
+      filter: {}
+    };
+    if (!this.formTestSuite.get('testEachAttribute').value) {
+      qs.filter = {
+        _id: {
+          '$nin': [ 'String', 'Number', 'Date', 'Location', 'Boolean' ]
+        }
+      };
+    }
+    this.mapping = [];
+    this.commonService.get('dataset', '/', qs)
+    .subscribe(
+      data => this.datasets = data.map(d => d._id),
+      () => this.errors.misc = 'Error fetching environments'
+    );
   }
 
 }

@@ -11,7 +11,7 @@ import { ResultsComponent } from './results/results.component';
 const routes: Routes = [
   {
     path: '', component: HomeComponent, children: [
-      { path: '', pathMatch: 'full', redirectTo: 'tests' },
+      { path: '', pathMatch: 'full', redirectTo: 'env' },
       { path: 'env', component: EnvironmentsComponent },
       { path: 'tests', component: TestsComponent },
       { path: 'dataset', component: DatasetComponent },
