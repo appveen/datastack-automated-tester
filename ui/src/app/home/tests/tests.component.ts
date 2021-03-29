@@ -19,7 +19,7 @@ export class TestsComponent implements OnInit {
   dataservices: any;
   selectedDataservice: any;
   datasets: any;
-  testsuite = [];
+  testsuites = [];
   selectedTestsuite: any;
   attributes = [];
 
@@ -94,7 +94,7 @@ export class TestsComponent implements OnInit {
     this.commonService.get('testsuite', '/', {sort: '_id'})
     .subscribe(
       data => {
-        this.testsuite = data.map(d => d._id);
+        this.testsuites = data;
         if (data.length > 0) {
           this.selectedTestsuite = data[0];
         }
@@ -165,8 +165,8 @@ export class TestsComponent implements OnInit {
     this.dataset = null;
   }
 
-  menuClick(id: string): void {
-    console.log(this.selectedTestsuite);
+  menuClick(ts: any): void {
+    this.selectedTestsuite = ts;
   }
 
 }

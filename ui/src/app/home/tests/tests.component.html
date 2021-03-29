@@ -23,11 +23,20 @@
 		<!-- LIST -->
 		<div class="col-12" *ngIf="!showCreateModal">
 			<div class="col-2">
-				<div class="list-group mt-3" *ngIf="testsuite?.length > 0">
+				<div class="list-group mt-3" *ngIf="testsuites?.length > 0">
 					<button type="button" class="list-group-item list-group-item-action"
-						[ngClass]="{'active': selectedTestsuite._id == ts}" (click)="menuClick(ts)"
-						*ngFor="let ts of testsuite">{{ts}}</button>
+						[ngClass]="{'active': selectedTestsuite._id == ts._id}" (click)="menuClick(ts)"
+						*ngFor="let ts of testsuites">{{ts._id}}</button>
 				</div>
+			</div>
+			<div class="col-8">
+				<div class="col-4">
+					<div class="mb-2">
+						<p>Testsuite name</p>
+						<p>{{selectedTestsuite._id}}</p>
+					</div>
+				</div>
+				<div class="col-8"></div>
 			</div>
 		</div>
 
