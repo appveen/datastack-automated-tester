@@ -23,10 +23,9 @@ router.post("", async (_req, _res) => {
 	try {
 		const data = _req.body;
 		logger.trace(data);
-		// let response = await testsCrud.model(data).save();
-		generator.generate(data);
-		_res.json(data);
-		// _res.json(response);
+		let response = await testsCrud.model(data).save();
+		await generator.generate(response);
+		_res.json(response);
 	} catch (_err) {
 		apiClient.handleError(_err, _res);
 	}
