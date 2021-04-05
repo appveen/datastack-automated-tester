@@ -12,6 +12,14 @@ let definition = {
 		"type": "Boolean",
 		"default": "true"
 	},
+	"users": [{
+		"username": "String",
+		"password": "String",
+		"operation": {
+			"type": "String",
+			"enum": ["ALL", "POST", "READ", "PUT", "DELETE", "APPROVE"]
+		}
+	}],
 	"testParams": "Object"
 }
 

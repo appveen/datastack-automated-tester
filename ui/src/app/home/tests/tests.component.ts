@@ -15,6 +15,9 @@ export class TestsComponent implements OnInit {
   showCreateModal = false;
   deleteConfirmation = false;
 
+  operations = ['ALL', 'POST', 'READ', 'PUT', 'DELETE', 'APPROVE'];
+  updatedOperations = ['All', 'POST', 'READ', 'PUT', 'DELETE', 'APPROVE'];
+
   environments: any;
   selectedEnvironment: any;
   dataservices: any;
@@ -27,6 +30,12 @@ export class TestsComponent implements OnInit {
   attribute: any;
   dataset: string;
   mapping = [];
+  users = [];
+  user = {
+    username: '',
+    password: '',
+    operation: ''
+  };
 
   errors = {
     misc: null,
@@ -51,6 +60,7 @@ export class TestsComponent implements OnInit {
       api: ['', Validators.required],
       testEachAttribute: ['', Validators.required],
       testParams: [],
+      users: [],
     });
   }
 
@@ -110,9 +120,17 @@ export class TestsComponent implements OnInit {
   updateDataServiceList(event): void {
     const selectedEnvironment = event.target.value;
     this.formTestSuite.patchValue({api: null});
+    this.users = [];
     this.environments.forEach(environment => {
       if (environment._id === selectedEnvironment) {
         this.selectedEnvironment = environment;
+        this.users.push({
+          username: environment.username,
+          password: environment.password,
+          operation: 'ALL'
+        });
+        this.updateOpertaionsList();
+        this.formTestSuite.patchValue({users: this.users});
         this.dataservices = environment.dataservices;
         this.formTestSuite.patchValue({app: this.selectedEnvironment.app});
       }
@@ -135,6 +153,14 @@ export class TestsComponent implements OnInit {
   startCreate(): void {
     this.__getEnvironments();
     this.__getDatasets();
+    this.mapping = [];
+    this.users = [];
+    this.user = {
+      username: '',
+      password: '',
+      operation: ''
+    };
+    this.updateOpertaionsList();
     this.formTestSuite.reset();
     this.formTestSuite.patchValue({testEachAttribute: true});
     this.showCreateModal = true;
@@ -155,6 +181,12 @@ export class TestsComponent implements OnInit {
     this.showCreateModal = true;
     this.formTestSuite.setValue(this.selectedTestsuite);
     this.mapping = [];
+    this.users = [];
+    this.user = {
+      username: '',
+      password: '',
+      operation: ''
+    };
   }
 
   deleteTestSuite(): void {
@@ -177,11 +209,8 @@ export class TestsComponent implements OnInit {
   }
 
   datasetSelect(id: string): void {
-    const dsIndex = this.mapping.indexOf(id);
-    if (dsIndex === -1 ) {
+    if (this.mapping.indexOf(id) === -1 ) {
       this.mapping.push(id);
-    } else {
-      this.mapping.splice(dsIndex, 1);
     }
     this.formTestSuite.patchValue({testParams: this.mapping});
   }
@@ -198,6 +227,50 @@ export class TestsComponent implements OnInit {
     this.formTestSuite.patchValue({testParams: this.mapping});
     this.attribute = null;
     this.dataset = null;
+  }
+
+  updateOpertaionsList(): void {
+    this.updatedOperations = JSON.parse(JSON.stringify(this.operations));
+    this.users.forEach(user => {
+      if (this.updatedOperations.indexOf(user.operation) !== -1) {
+        this.updatedOperations.splice(this.updatedOperations.indexOf(user.operation), 1);
+      }
+    });
+  }
+
+  disableAddUser(): boolean {
+    if (this.user.username === '') {
+      return true;
+    }
+    if (this.user.password === '') {
+      return true;
+    }
+    if (this.user.operation === '') {
+      return true;
+    }
+    return false;
+  }
+
+  addUser(): void {
+    this.users.push(this.user);
+    this.updateOpertaionsList();
+    this.formTestSuite.patchValue({users: this.users});
+    this.user = {
+      username: '',
+      password: '',
+      operation: ''
+    };
+  }
+
+  clearUser(i: number): void {
+    this.users.splice(i, 1);
+    this.updateOpertaionsList();
+    this.formTestSuite.patchValue({users: this.users});
+    this.user = {
+      username: '',
+      password: '',
+      operation: ''
+    };
   }
 
   menuClick(ts: any): void {
@@ -217,7 +290,7 @@ export class TestsComponent implements OnInit {
     if (!this.formTestSuite.get('testEachAttribute').value) {
       qs.filter = {
         _id: {
-          '$nin': [ 'String', 'Number', 'Date', 'Location', 'Boolean' ]
+          $nin: [ 'String', 'Number', 'Date', 'Location', 'Boolean' ]
         }
       };
     }
