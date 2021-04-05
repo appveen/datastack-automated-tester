@@ -5,6 +5,8 @@ const router = express.Router();
 const apiClient = require('../lib/api.client')
 const generator = require('../lib/generator')
 
+const db = require("../lib/db.client")
+
 let schema = require("../schema/testSuite.schema")
 
 const testsCrud = new MongooseExpressMiddleware("testSuite", schema, null)
@@ -17,7 +19,17 @@ router.put("/bulkUpdate", testsCrud.bulkUpdate)
 router.delete("/bulkDelete", testsCrud.bulkDestroy)
 router.get("/:id", testsCrud.show)
 router.put("/:id", testsCrud.update)
-router.delete("/:id", testsCrud.destroy)
+
+router.delete("/:id", async (_req, _res) => {
+	try {
+		logger.debug(`Delete test suite :: ${_req.params.id}`);
+		await db.deleteDocument("testsuites", { _id: _req.params.id })
+		await db.deleteDocument("tests", { testSuite: _req.params.id })
+		_res.end();
+	} catch (_err) {
+		apiClient.handleError(_err, _res);
+	}
+})
 
 router.post("", async (_req, _res) => {
 	try {

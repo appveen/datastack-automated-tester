@@ -220,7 +220,6 @@ export class TestsComponent implements OnInit {
   }
 
   deleteTestSuite(): void {
-    this.commonService.delete('test', `/testSuite/${this.selectedTestsuite._id}`, null).subscribe();
     this.commonService.delete('testsuite', `/${this.selectedTestsuite._id}`)
     .subscribe(
       () => {
