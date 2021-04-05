@@ -26,6 +26,11 @@ export class TestsComponent implements OnInit {
   testsuites = [];
   selectedTestsuite: any;
   attributes = [];
+  tests = [];
+  testProperties = {
+    count: 0,
+    page: 1
+  };
 
   attribute: any;
   dataset: string;
@@ -112,9 +117,33 @@ export class TestsComponent implements OnInit {
         this.testsuites = data;
         if (data.length > 0) {
           this.selectedTestsuite = data[0];
+          this.__getTests();
         }
       },
       () => this.errors.misc = 'Error fetching testsuites'
+    );
+  }
+
+  __getTests(): void {
+    this.__resetErrors();
+    this.__resetSpinners();
+    const options = {
+      filter: {
+        testSuite: this.selectedTestsuite._id
+      },
+      page: 20,
+      count: false
+    };
+    this.commonService.get('test', '/', options)
+    .subscribe(
+      data => this.tests = data,
+      () => this.errors.misc = 'Error fetching tests'
+    );
+    options.count = true;
+    this.commonService.get('test', '/', options)
+    .subscribe(
+      data => this.testProperties.count = data,
+      () => this.errors.misc = 'Error fetching tests'
     );
   }
 
@@ -191,6 +220,7 @@ export class TestsComponent implements OnInit {
   }
 
   deleteTestSuite(): void {
+    this.commonService.delete('test', `/testSuite/${this.selectedTestsuite._id}`, null).subscribe();
     this.commonService.delete('testsuite', `/${this.selectedTestsuite._id}`)
     .subscribe(
       () => {

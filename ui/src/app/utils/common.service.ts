@@ -69,6 +69,7 @@ export class CommonService {
 
     if (options.page) { urlParams = urlParams.set('page', options.page.toString()); }
     if (options.count) { urlParams = urlParams.set('count', options.count.toString()); }
+    if (options.limit) { urlParams = urlParams.set('limit', options.limit.toString()); }
     if (options.select) { urlParams = urlParams.set('select', options.select); }
     if (options.sort) { urlParams = urlParams.set('sort', options.sort); }
     if (options.filter) { urlParams = urlParams.set('filter', JSON.stringify(options.filter)); }

@@ -20,131 +20,133 @@
 			<hr>
 		</div>
 
-		<div class="col-12 d-flex flex-column align-items-center gap-2" *ngIf="!showCreateModal && !selectedTestsuite._id">
-			<p class="text-primary p-5 m-5">No test suites defined!</p>
-		</div>
-		<!-- LIST -->
-		<div class="col-12 d-flex flex-row gap-2" *ngIf="!showCreateModal && selectedTestsuite._id">
-			<div class="col-2">
-				<div class="list-group" *ngIf="testsuites?.length > 0">
-					<button type="button" class="list-group-item list-group-item-action"
-						[ngClass]="{'active': selectedTestsuite._id == ts._id}" (click)="menuClick(ts)"
-						*ngFor="let ts of testsuites">{{ts._id}}</button>
-				</div>
+		<ng-container *ngIf="!showCreateModal">
+			<div class="col-12 d-flex flex-column align-items-center gap-2" *ngIf="testsuites.length < 1">
+				<p class="text-primary p-5 m-5">No test suites defined!</p>
 			</div>
-
-			<div class="col-10">
-				<nav class="navbar navbar-expand-lg bg-dark text-light border">
-					<div class="container-fluid">
-						<span class="fs-4 fw-bold">{{selectedTestsuite?._id}}</span>
-						<div class="d-flex">
-							<small class="text-danger mx-2" *ngIf="errors.remove">Error removing testEnvironment!</small>
-							<button class="btn btn-sm btn-danger buttonwidth mx-2" (click)="deleteConfirmation = true">
-								Delete </button>
-						</div>
-					</div>
-				</nav>
-				<nav class="d-flex justify-content-end p-2 mb-2 bg-warning shadow" *ngIf="deleteConfirmation">
-					<span class="text-dark fs-5">Are you sure?</span>
-					<button class="btn btn-sm btn-dark buttonwidth mx-2" (click)="deleteConfirmation = false">Cancel</button>
-					<button class="btn btn-sm btn-danger buttonwidth mx-2" (click)="deleteTestSuite()">
-						<span class="spinner-grow spinner-grow-sm text-dark" role="status" aria-hidden="true"
-							*ngIf="spinners.remove"></span> YES</button>
-				</nav>
-
-				<div class="d-flex flex-column align-items-center mt-2 gap-3">
-					<!-- TOP -->
-					<div class="card col-12 border border-dark">
-						<div class="card-header">
-							<span class="fs-6 fw-bold">Basic</span>
-						</div>
-						<div class="card-body">
-							<div class="mb-2">
-								<strong>Environment:</strong>
-								<span class="mx-2">{{selectedTestsuite?.environment}}</span>
-							</div>
-							<div class="mb-2">
-								<strong>App:</strong>
-								<span class="badge bg-primary fw-normal text-light mx-2">{{selectedTestsuite?.app}}</span>
-							</div>
-							<div class="mb-2">
-								<strong>Dataservice:</strong>
-								<span class="mx-2">{{selectedTestsuite?.dataserviceName}}
-									<small>({{selectedTestsuite?.dataservice}})</small></span>
-							</div>
-							<div class="mb-2">
-								<strong>API:</strong>
-								<span class="badge bg-warning fw-normal text-dark mx-2">{{selectedTestsuite?.api}}</span>
-							</div>
-						</div>
-					</div>
-
-					<!-- MIDDLE -->
-					<div class="card col-12 border border-dark">
-						<div class="card-header">
-							<span class="fs-6 fw-bold">Users</span>
-						</div>
-						<div class="card-body">
-							<table class="table table-hover table-sm" *ngIf="selectedTestsuite?.users">
-								<thead>
-									<tr>
-										<th scope="col">#</th>
-										<th scope="col">Username</th>
-										<th scope="col">Password</th>
-										<th scope="col">Operation</th>
-									</tr>
-								</thead>
-								<tbody>
-									<tr *ngFor="let row of selectedTestsuite?.users; let i = index">
-										<td>{{i + 1}}</td>
-										<td>{{row.username}}</td>
-										<td>{{row.password}}</td>
-										<td>{{row.operation}}</td>
-									</tr>
-								</tbody>
-							</table>
-						</div>
-					</div>
-
-					<!-- BOTTOM -->
-					<div class="card col-12 border border-dark">
-						<div class="card-header">
-							<span class="fs-6 fw-bold">Dataset mapping</span>
-						</div>
-						<div class="card-body">
-							<div class="mb-2">
-								<strong>Test each attribute:</strong>
-								<span class="mx-2 badge bg-success" *ngIf="selectedTestsuite?.testEachAttribute">YES</span>
-								<span class="mx-2 badge bg-danger" *ngIf="!selectedTestsuite?.testEachAttribute">NO</span>
-							</div>
-
-							<strong class="mb-2">Datasets:</strong>
-
-							<table class="table table-hover table-sm" *ngIf="selectedTestsuite?.testEachAttribute">
-								<thead>
-									<tr>
-										<th scope="col">#</th>
-										<th scope="col">Attribute</th>
-										<th scope="col">Dataset</th>
-									</tr>
-								</thead>
-								<tbody>
-									<tr *ngFor="let row of selectedTestsuite?.testParams; let i = index">
-										<td>{{i + 1}}</td>
-										<td>{{row[0]}}</td>
-										<td>{{row[1]}}</td>
-									</tr>
-								</tbody>
-							</table>
-							<div *ngIf="!selectedTestsuite?.testEachAttribute">
-								<span class="badge bg-dark text-light mx-1"
-									*ngFor="let tp of selectedTestsuite?.testParams">{{tp}}</span>
-							</div>
-						</div>
+			<!-- LIST -->
+			<div class="col-12 d-flex flex-row gap-2" *ngIf="testsuites.length > 0">
+				<div class="col-2">
+					<div class="list-group" *ngIf="testsuites?.length > 0">
+						<button type="button" class="list-group-item list-group-item-action"
+							[ngClass]="{'active': selectedTestsuite._id == ts._id}" (click)="menuClick(ts)"
+							*ngFor="let ts of testsuites">{{ts._id}}</button>
 					</div>
 				</div>
+
+				<div class="col-10">
+					<nav class="navbar navbar-expand-lg bg-dark text-light border">
+						<div class="container-fluid">
+							<span class="fs-4 fw-bold">{{selectedTestsuite?._id}}</span>
+							<div class="d-flex">
+								<small class="text-danger mx-2" *ngIf="errors.remove">Error removing testEnvironment!</small>
+								<button class="btn btn-sm btn-danger buttonwidth mx-2" (click)="deleteConfirmation = true">
+									Delete </button>
+							</div>
+						</div>
+					</nav>
+					<nav class="d-flex justify-content-end p-2 mb-2 bg-warning shadow" *ngIf="deleteConfirmation">
+						<span class="text-dark fs-5">Are you sure?</span>
+						<button class="btn btn-sm btn-dark buttonwidth mx-2" (click)="deleteConfirmation = false">Cancel</button>
+						<button class="btn btn-sm btn-danger buttonwidth mx-2" (click)="deleteTestSuite()">
+							<span class="spinner-grow spinner-grow-sm text-dark" role="status" aria-hidden="true"
+								*ngIf="spinners.remove"></span> YES</button>
+					</nav>
+
+					<div class="d-flex flex-column align-items-center mt-2 gap-3">
+						<!-- TOP -->
+						<div class="card col-12 border border-dark">
+							<div class="card-header">
+								<span class="fs-6 fw-bold">Basic</span>
+							</div>
+							<div class="card-body">
+								<div class="mb-2">
+									<strong>Environment:</strong>
+									<span class="mx-2">{{selectedTestsuite?.environment}}</span>
+								</div>
+								<div class="mb-2">
+									<strong>App:</strong>
+									<span class="badge bg-primary fw-normal text-light mx-2">{{selectedTestsuite?.app}}</span>
+								</div>
+								<div class="mb-2">
+									<strong>Dataservice:</strong>
+									<span class="mx-2">{{selectedTestsuite?.dataserviceName}}
+										<small>({{selectedTestsuite?.dataservice}})</small></span>
+								</div>
+								<div class="mb-2">
+									<strong>API:</strong>
+									<span class="badge bg-warning fw-normal text-dark mx-2">{{selectedTestsuite?.api}}</span>
+								</div>
+							</div>
+						</div>
+
+						<!-- MIDDLE -->
+						<div class="card col-12 border border-dark">
+							<div class="card-header">
+								<span class="fs-6 fw-bold">Users</span>
+							</div>
+							<div class="card-body">
+								<table class="table table-hover table-sm" *ngIf="selectedTestsuite?.users">
+									<thead>
+										<tr>
+											<th scope="col">#</th>
+											<th scope="col">Username</th>
+											<th scope="col">Password</th>
+											<th scope="col">Operation</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr *ngFor="let row of selectedTestsuite?.users; let i = index">
+											<td>{{i + 1}}</td>
+											<td>{{row.username}}</td>
+											<td>{{row.password}}</td>
+											<td>{{row.operation}}</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+
+						<!-- BOTTOM -->
+						<div class="card col-12 border border-dark">
+							<div class="card-header">
+								<span class="fs-6 fw-bold">Dataset mapping</span>
+							</div>
+							<div class="card-body">
+								<div class="mb-2">
+									<strong>Test each attribute:</strong>
+									<span class="mx-2 badge bg-success" *ngIf="selectedTestsuite?.testEachAttribute">YES</span>
+									<span class="mx-2 badge bg-danger" *ngIf="!selectedTestsuite?.testEachAttribute">NO</span>
+								</div>
+
+								<strong class="mb-2">Datasets:</strong>
+
+								<table class="table table-hover table-sm" *ngIf="selectedTestsuite?.testEachAttribute">
+									<thead>
+										<tr>
+											<th scope="col">#</th>
+											<th scope="col">Attribute</th>
+											<th scope="col">Dataset</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr *ngFor="let row of selectedTestsuite?.testParams; let i = index">
+											<td>{{i + 1}}</td>
+											<td>{{row[0]}}</td>
+											<td>{{row[1]}}</td>
+										</tr>
+									</tbody>
+								</table>
+								<div *ngIf="!selectedTestsuite?.testEachAttribute">
+									<span class="badge bg-dark text-light mx-1"
+										*ngFor="let tp of selectedTestsuite?.testParams">{{tp}}</span>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
 			</div>
-		</div>
+		</ng-container>
 
 		<!-- CREATE -->
 		<div class="col-12" *ngIf="showCreateModal">

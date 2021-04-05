@@ -5,7 +5,8 @@ export interface UserDetails {
 
 export interface GetOptions {
   page?: number;
-  count?: number;
+  count?: boolean;
+  limit?: number;
   select?: string;
   sort?: string;
   filter?: any;
