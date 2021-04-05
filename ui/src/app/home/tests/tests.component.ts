@@ -105,6 +105,7 @@ export class TestsComponent implements OnInit {
   __getTestsuites(): void {
     this.__resetErrors();
     this.__resetSpinners();
+    this.selectedTestsuite = {};
     this.commonService.get('testsuite', '/', {sort: '_id'})
     .subscribe(
       data => {
