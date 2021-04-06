@@ -1,6 +1,6 @@
 <div class="container-fluid">
 	<div class="row">
-		<div class="col-12 mb-3">
+		<div class="col-12 mb-2">
 			<h2 class="mb-3 text-secondary">
 				<div *ngIf="!showCreateModal">
 					<i class="bi bi-collection fs-5"></i>
@@ -53,12 +53,27 @@
 								*ngIf="spinners.remove"></span> YES</button>
 					</nav>
 
-					<div class="d-flex flex-column align-items-center mt-2 gap-3">
-						<!-- TOP -->
-						<div class="card col-12 border border-dark">
-							<div class="card-header">
-								<span class="fs-6 fw-bold">Basic</span>
-							</div>
+					<div class="d-flex flex-column mt-2 gap-3">
+						<ul class="nav nav-tabs">
+							<li class="nav-item">
+								<a class="nav-link fakeLink" [ngClass]="{active: selectedTab === 'Config'}"
+									(click)="selectedTab = 'Config'">Config</a>
+							</li>
+							<li class="nav-item">
+								<a class="nav-link fakeLink" [ngClass]="{active: selectedTab === 'Users'}"
+									(click)="selectedTab = 'Users'">Users</a>
+							</li>
+							<li class="nav-item">
+								<a class="nav-link fakeLink" [ngClass]="{active: selectedTab === 'DatasetMapping'}"
+									(click)="selectedTab = 'DatasetMapping'">Dataset mapping</a>
+							</li>
+							<li class="nav-item">
+								<a class="nav-link fakeLink" [ngClass]="{active: selectedTab === 'Testcases'}"
+									(click)="selectedTab = 'Testcases'">Testcases</a>
+							</li>
+						</ul>
+						<!-- CONFIG -->
+						<div class="col-12" *ngIf="selectedTab === 'Config'">
 							<div class="card-body">
 								<div class="mb-2">
 									<strong>Environment:</strong>
@@ -80,11 +95,8 @@
 							</div>
 						</div>
 
-						<!-- MIDDLE -->
-						<div class="card col-12 border border-dark">
-							<div class="card-header">
-								<span class="fs-6 fw-bold">Users</span>
-							</div>
+						<!-- USERS -->
+						<div class="col-12" *ngIf="selectedTab === 'Users'">
 							<div class="card-body">
 								<table class="table table-hover table-sm" *ngIf="selectedTestsuite?.users">
 									<thead>
@@ -107,11 +119,8 @@
 							</div>
 						</div>
 
-						<!-- BOTTOM -->
-						<div class="card col-12 border border-dark">
-							<div class="card-header">
-								<span class="fs-6 fw-bold">Dataset mapping</span>
-							</div>
+						<!-- MAPPING -->
+						<div class="col-12" *ngIf="selectedTab === 'DatasetMapping'">
 							<div class="card-body">
 								<div class="mb-2">
 									<strong>Test each attribute:</strong>
@@ -143,19 +152,71 @@
 								</div>
 							</div>
 						</div>
+
+						<!-- TESTCASES -->
+						<div class="col-12" *ngIf="selectedTab === 'Testcases'">
+							<div class="card-body" *ngIf="tests.length < 1">
+								<span class="text-danger">No test cases generated.</span>
+							</div>
+							<div class="card-body" *ngIf="tests.length > 0">
+								<dl class="row">
+									<dt class="col-sm-1">Testset</dt>
+									<dd class="col-sm-11 text-primary">{{tests[0].testSet}}</dd>
+									<dt class="col-sm-1">Testcases</dt>
+									<dd class="col-sm-11"><em>{{testProperties.count}}</em></dd>
+								</dl>
+								<button class="btn btn-warning btn-sm" (click)="regenerateTests()">Regerate tests</button>
+
+								<div class="d-flex flex-column">
+									<div class="d-flex flex-row justify-content-end mb-2">
+										<div class="btn-group btn-group-sm">
+											<button type="button" class="btn btn-outline-secondary" (click)="testsPrev()">Prev</button>
+											<button type="button" class="btn btn-outline-secondary" disabled>Page
+												{{testProperties.page}}/{{testProperties.count/10}}</button>
+											<button type="button" class="btn btn-outline-secondary" (click)="testsNext()">Next</button>
+										</div>
+									</div>
+									<div class="d-flex flex-row border border-dark p-1">
+										<small style="width: 30%;" class="fw-bold">ID</small>
+										<small style="width: 10%;" class="fw-bold">Method</small>
+										<small style="width: 60%;" class="fw-bold">Data</small>
+									</div>
+									<div class="d-flex flex-row mb-1 border border-top-0 p-1" *ngFor="let test of tests">
+										<small style="width: 30%;">{{test._id}}</small>
+										<small style="width: 10%;">
+											<span *ngIf="test.responseCode == 200" class="badge bg-success">{{test.responseCode}}</span>
+											<span *ngIf="test.responseCode == 400" class="badge bg-danger">{{test.responseCode}}</span>
+											{{test.method}}</small>
+										<small style="width: 60%; overflow-wrap: break-word;">{{stringifiedData(test.data)}}</small>
+									</div>
+								</div>
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>
 		</ng-container>
 
 		<!-- CREATE -->
-		<div class="col-12" *ngIf="showCreateModal">
-			<div class="mb-3 d-flex flex-column align-items-center gap-3">
-				<!-- TOP -->
-				<div class="card col-6 border border-dark">
-					<div class="card-header">
-						<h5>Basic<span class="badge bg-secondary float-end">1/3</span></h5>
-					</div>
+		<ng-container *ngIf="showCreateModal">
+			<div class="d-flex flex-column">
+				<ul class="nav nav-tabs">
+					<li class="nav-item">
+						<a class="nav-link fakeLink" [ngClass]="{active: selectedTab === 'Config'}"
+							(click)="selectedTab = 'Config'">Config</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link fakeLink" [ngClass]="{active: selectedTab === 'Users'}"
+							(click)="selectedTab = 'Users'">Users</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link fakeLink" [ngClass]="{active: selectedTab === 'DatasetMapping'}"
+							(click)="selectedTab = 'DatasetMapping'">Dataset mapping</a>
+					</li>
+				</ul>
+
+				<!-- CONFIG -->
+				<div class="col-6" *ngIf="selectedTab === 'Config'">
 					<div class="card-body">
 						<form [formGroup]="formTestSuite">
 							<div class="mb-3">
@@ -194,11 +255,8 @@
 					</div>
 				</div>
 
-				<!-- MIDDLE -->
-				<div class="card col-8 border border-dark">
-					<div class="card-header">
-						<h5>Users<span class="badge bg-dark float-end">2/3</span></h5>
-					</div>
+				<!-- USERS -->
+				<div class="col-8" *ngIf="selectedTab === 'Users'">
 					<div class="card-body">
 						<table class="table table-hover table-sm">
 							<thead>
@@ -239,17 +297,17 @@
 					</div>
 				</div>
 
-				<!-- BOTTOM -->
-				<div class="card col-8 border border-dark">
-					<div class="card-header">
-						<h5>Dataset mapping<span class="badge bg-dark float-end">3/3</span></h5>
+				<!-- MAPPING -->
+				<div class="col-8" *ngIf="selectedTab === 'DatasetMapping'">
+					<div class="card-body" *ngIf="!formTestSuite.get('testEachAttribute').value">
+						<span class="text-secondary">Select a dataservice to add mappings</span>
 					</div>
-					<div class="card-body">
+					<div class="card-body" *ngIf="formTestSuite.get('testEachAttribute').value">
 						<div class="mb-2">
 							<button class="btn btn-warning btn-sm float-end" (click)="clearAllMappings()"
 								*ngIf="mapping.length > 5">Clear</button>
 						</div>
-						<table class="table table-hover table-sm" *ngIf="formTestSuite.get('testEachAttribute').value">
+						<table class="table table-hover table-sm">
 							<thead>
 								<tr>
 									<th scope="col">#</th>
@@ -291,6 +349,6 @@
 					</div>
 				</div>
 			</div>
-		</div>
+		</ng-container>
 	</div>
 </div>

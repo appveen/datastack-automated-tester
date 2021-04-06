@@ -14,6 +14,7 @@ export class TestsComponent implements OnInit {
 
   showCreateModal = false;
   deleteConfirmation = false;
+  selectedTab = 'Testcases';
 
   operations = ['ALL', 'POST', 'READ', 'PUT', 'DELETE', 'APPROVE'];
   updatedOperations = ['All', 'POST', 'READ', 'PUT', 'DELETE', 'APPROVE'];
@@ -29,7 +30,8 @@ export class TestsComponent implements OnInit {
   tests = [];
   testProperties = {
     count: 0,
-    page: 1
+    page: 1,
+    limit: 20
   };
 
   attribute: any;
@@ -131,7 +133,9 @@ export class TestsComponent implements OnInit {
       filter: {
         testSuite: this.selectedTestsuite._id
       },
-      page: 20,
+      sort: '_id',
+      page: this.testProperties.page,
+      limit: this.testProperties.limit,
       count: false
     };
     this.commonService.get('test', '/', options)
@@ -143,6 +147,48 @@ export class TestsComponent implements OnInit {
     this.commonService.get('test', '/', options)
     .subscribe(
       data => this.testProperties.count = data,
+      () => this.errors.misc = 'Error fetching tests'
+    );
+  }
+
+  testsPrev(): void {
+    this.testProperties.page -= 1;
+    if (this.testProperties.page < 1) {
+      this.testProperties.page = 1;
+    }
+    const options = {
+      filter: {
+        testSuite: this.selectedTestsuite._id
+      },
+      sort: '_id',
+      page: this.testProperties.page,
+      limit: this.testProperties.limit,
+      count: false
+    };
+    this.commonService.get('test', '/', options)
+    .subscribe(
+      data => this.tests = data,
+      () => this.errors.misc = 'Error fetching tests'
+    );
+  }
+
+  testsNext(): void {
+    this.testProperties.page += 1;
+    if (this.testProperties.page > Math.ceil(this.testProperties.count / 10)) {
+      this.testProperties.page = Math.ceil(this.testProperties.count / 10);
+    }
+    const options = {
+      filter: {
+        testSuite: this.selectedTestsuite._id
+      },
+      sort: '_id',
+      page: this.testProperties.page,
+      limit: this.testProperties.limit,
+      count: false
+    };
+    this.commonService.get('test', '/', options)
+    .subscribe(
+      data => this.tests = data,
       () => this.errors.misc = 'Error fetching tests'
     );
   }
@@ -194,6 +240,7 @@ export class TestsComponent implements OnInit {
     this.formTestSuite.reset();
     this.formTestSuite.patchValue({testEachAttribute: true});
     this.showCreateModal = true;
+    this.selectedTab = 'Config';
   }
 
   createNewTestSuite(): void {
@@ -331,5 +378,11 @@ export class TestsComponent implements OnInit {
       () => this.errors.misc = 'Error fetching environments'
     );
   }
+
+  stringifiedData(data: any): string {
+    return JSON.stringify(data);
+  }
+
+  regenerateTests(): void {}
 
 }
