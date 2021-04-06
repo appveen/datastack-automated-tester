@@ -17,7 +17,7 @@ let definition = {
 		"password": "String",
 		"operation": {
 			"type": "String",
-			"enum": ["ALL", "POST", "READ", "PUT", "DELETE", "APPROVE"]
+			"enum": ["ALL", "POST", "GET", "PUT", "DELETE", "APPROVE"]
 		}
 	}],
 	"testParams": "Object"

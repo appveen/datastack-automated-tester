@@ -26,6 +26,7 @@ router.delete("/:id", async (_req, _res) => {
 		logger.debug(`Delete test suite :: ${_req.params.id}`);
 		await db.deleteDocument("testsuites", { _id: _req.params.id })
 		await db.deleteDocument("tests", { testSuite: _req.params.id })
+		await db.deleteDocument("resultsummaries", { testSuite: _req.params.id })
 		_res.end();
 	} catch (_err) {
 		apiClient.handleError(_err, _res);

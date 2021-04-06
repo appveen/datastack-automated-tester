@@ -16,8 +16,8 @@ export class TestsComponent implements OnInit {
   deleteConfirmation = false;
   selectedTab = 'Config';
 
-  operations = ['ALL', 'POST', 'READ', 'PUT', 'DELETE', 'APPROVE'];
-  updatedOperations = ['All', 'POST', 'READ', 'PUT', 'DELETE', 'APPROVE'];
+  operations = ['ALL', 'POST', 'GET', 'PUT', 'DELETE', 'APPROVE'];
+  updatedOperations = ['All', 'POST', 'GET', 'PUT', 'DELETE', 'APPROVE'];
 
   environments: any;
   selectedEnvironment: any;
