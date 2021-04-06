@@ -9,12 +9,17 @@ let definition = {
 	"endDate": "Date",
 	"status": {
 		"type": "String",
-		"enum": ["PASS", "FAIl", "DNR"]
+		"enum": ["PASS", "FAIl", "PENDING"],
+		"default": "PENDING"
 	},
-	"endpoint": "String",
-	"request": "Object",
+	"comment": "String",
+	"uri": "String",
+	"method": "String",
+	"data": "Object",
+	"expectedStatus": "Number",
 	"responseHeaders": "Object",
-	"response": "Object"
+	"response": "Object",
+	"responseStatus": "Number"
 }
 
 module.exports = Mongoose.Schema(definition)
