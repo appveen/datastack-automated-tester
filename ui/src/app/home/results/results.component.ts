@@ -55,14 +55,14 @@ export class ResultsComponent implements OnInit {
         this.testsuites = data;
         if (data.length > 0) {
           this.selectedTestsuite = data[0];
-          this.__getResultSumamry();
+          this.__getResultSummary();
         }
       },
       () => this.errors.misc = 'Error fetching testsuites'
     );
   }
 
-  __getResultSumamry(): void {
+  __getResultSummary(): void {
     this.__resetErrors();
     const options = {
       filter: {
@@ -110,7 +110,6 @@ export class ResultsComponent implements OnInit {
         this.results = data;
         if (data.length > 0) {
           this.selectedResult = data[0];
-          this.__getResults();
         }
       },
       () => this.errors.misc = 'Error fetching result summary'
@@ -125,10 +124,12 @@ export class ResultsComponent implements OnInit {
 
   menuClick(ts: any): void {
     this.selectedTestsuite = ts;
+    this.__getResultSummary();
   }
 
   menuClickResultSummary(rs: any): void {
     this.selectedResultSummary = rs;
+    this.__getResults();
   }
 
   menuClickResult(result: any): void {
@@ -136,7 +137,7 @@ export class ResultsComponent implements OnInit {
   }
 
   runTest(): void {
-    console.log(this.selectedTestsuite._id)
+    console.log(this.selectedTestsuite._id);
   }
 
 }

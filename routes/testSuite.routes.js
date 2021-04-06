@@ -6,6 +6,7 @@ const apiClient = require('../lib/api.client')
 const generator = require('../lib/generator')
 
 const db = require("../lib/db.client")
+const runner = require("../lib/run.tests")
 
 let schema = require("../schema/testSuite.schema")
 
@@ -38,6 +39,18 @@ router.post("", async (_req, _res) => {
 		let response = await testsCrud.model(data).save();
 		await generator.generate(response);
 		_res.json(response);
+	} catch (_err) {
+		apiClient.handleError(_err, _res);
+	}
+})
+
+router.put("/:testSuite/run", async (_req, _res) => {
+	try {
+		const testSuiteId = _req.params.testSuite;
+		const resultSumamryId = `RUN-${testSuiteId}-${Date.now()}`
+		logger.info(`Starting test run for ${testSuiteId} :: ${resultSumamryId}`);
+		_res.json({ message: `${resultSumamryId} : Tests start initiated.` });
+		runner.run(testSuiteId, resultSumamryId)
 	} catch (_err) {
 		apiClient.handleError(_err, _res);
 	}

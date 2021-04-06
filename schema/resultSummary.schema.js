@@ -10,6 +10,10 @@ let definition = {
 	"pass": "Number",
 	"fail": "Number",
 	"endpoint": "String",
+	"status": {
+		"type": "String",
+		"enum": ["Pending", "Completed"]
+	}
 }
 
 module.exports = Mongoose.Schema(definition)
