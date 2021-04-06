@@ -21,6 +21,7 @@ let datasetRouter = require("./routes/dataset.routes")
 let testRouter = require("./routes/test.routes")
 let testSuiteRouter = require("./routes/testSuite.routes")
 let resultsRouter = require("./routes/result.routes")
+let resultSummaryRouter = require("./routes/resultSummary.routes")
 let userRouter = require("./routes/user.routes")
 
 let checkSession = require('./lib/api.client').check
@@ -51,6 +52,7 @@ app.use("/api/dataset", datasetRouter);
 app.use("/api/testsuite", testSuiteRouter);
 app.use("/api/test", testRouter);
 app.use("/api/result", resultsRouter);
+app.use("/api/resultsummary", resultSummaryRouter);
 
 // Mongoose.set("debug", "true")
 

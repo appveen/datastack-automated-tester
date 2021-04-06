@@ -14,7 +14,7 @@ export class TestsComponent implements OnInit {
 
   showCreateModal = false;
   deleteConfirmation = false;
-  selectedTab = 'Testcases';
+  selectedTab = 'Config';
 
   operations = ['ALL', 'POST', 'READ', 'PUT', 'DELETE', 'APPROVE'];
   updatedOperations = ['All', 'POST', 'READ', 'PUT', 'DELETE', 'APPROVE'];

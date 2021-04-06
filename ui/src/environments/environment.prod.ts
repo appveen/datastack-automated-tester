@@ -8,5 +8,6 @@ export const environment = {
     test: '/api/test',
     testsuite: '/api/testsuite',
     result: '/api/result',
+    resultsummary: '/api/resultsummary',
   }
 };
