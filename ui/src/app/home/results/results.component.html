@@ -30,7 +30,7 @@
 				</div>
 				<div class="list-group" *ngIf="resultSummary?.length > 0">
 					<button type="button" class="list-group-item list-group-item-action"
-						[ngClass]="{'active': selectedResultSummary._id == ts._id}" (click)="menuClickResultSummary(rs)"
+						[ngClass]="{'active': selectedResultSummary._id == rs._id}" (click)="menuClickResultSummary(rs)"
 						*ngFor="let rs of resultSummary">{{rs._id}}</button>
 				</div>
 			</div>

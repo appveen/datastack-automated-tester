@@ -273,6 +273,7 @@ export class TestsComponent implements OnInit {
         this.__getTestsuites();
         this.showCreateModal = false;
         this.deleteConfirmation = false;
+        this.selectedTab = 'Config';
       },
       () => this.errors.misc = 'Error creating testsuite'
     );
@@ -352,6 +353,8 @@ export class TestsComponent implements OnInit {
 
   menuClick(ts: any): void {
     this.selectedTestsuite = ts;
+    this.__getTests();
+    this.selectedTab = 'Config';
   }
 
   datasetHasBeenSelected(id: any): boolean {
