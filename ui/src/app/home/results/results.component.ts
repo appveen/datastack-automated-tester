@@ -99,12 +99,12 @@ export class ResultsComponent implements OnInit {
         testSuite: this.selectedTestsuite._id,
         resultSummary: this.selectedResultSummary._id
       },
-      sort: '_id',
+      sort: 'status,test',
       page: this.resultProperties.page,
       limit: this.resultProperties.limit,
       count: false
     };
-    this.commonService.get('resultsummary', '/', options)
+    this.commonService.get('result', '/', options)
     .subscribe(
       data => {
         this.results = data;
@@ -115,7 +115,7 @@ export class ResultsComponent implements OnInit {
       () => this.errors.misc = 'Error fetching result summary'
     );
     options.count = true;
-    this.commonService.get('resultsummary', '/', options)
+    this.commonService.get('result', '/', options)
     .subscribe(
       data => this.resultProperties.count = data,
       () => this.errors.misc = 'Error fetching result summary'
@@ -134,10 +134,16 @@ export class ResultsComponent implements OnInit {
 
   menuClickResult(result: any): void {
     this.selectedResult = result;
+    const el = document.getElementById('resultView');
+    el.scrollIntoView({inline: 'start'});
   }
 
   runTest(): void {
     console.log(this.selectedTestsuite._id);
+  }
+
+  stringifiedData(data: any): string {
+    return JSON.stringify(data);
   }
 
 }

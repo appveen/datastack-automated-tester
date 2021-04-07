@@ -185,7 +185,7 @@
 										<small style="width: 30%;">{{test._id}}</small>
 										<small style="width: 10%;">
 											<span *ngIf="test.responseCode == 200" class="badge bg-success">{{test.responseCode}}</span>
-											<span *ngIf="test.responseCode == 400" class="badge bg-danger">{{test.responseCode}}</span>
+											<span *ngIf="test.responseCode == 404" class="badge bg-danger">{{test.responseCode}}</span>
 											{{test.method}}</small>
 										<small style="width: 60%; overflow-wrap: break-word;">{{stringifiedData(test.data)}}</small>
 									</div>
