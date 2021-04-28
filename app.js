@@ -12,14 +12,14 @@ if (process.argv.length < 3) {
 	process.exit();
 }
 
-const testFile = process.argv[2]
+const testFile = process.argv[2];
 
 logger.info(`Using test file : ${testFile}`);
 
 if (!fs.existsSync(testFile)) {
-	logger.error(`Unable to find test file ${testFile}`)
+	logger.error(`Unable to find test file ${testFile}`);
 }
 
-const testFileData = fs.readFileSync(testFile).toString()
+const testFileData = fs.readFileSync(testFile).toString();
 
-logger.info(testFileData)
+logger.info(testFileData);
