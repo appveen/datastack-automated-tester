@@ -1,5 +1,8 @@
 {
-	"url": "https://bifrost.ds.appveen.com",
+	"url": "https: //bifrost.ds.appveen.com",
 	"dataservice": {},
-	"data": []
+	"data": {
+		"pass": [],
+		"fail": []
+	}
 }
